@@ -25,6 +25,7 @@ class ChessPiece {
   char pieceType; 
   Boolean selected = false;
   boolean firstMove = false;
+  byte BitBoard[] = new byte[64];
   
 
   
@@ -204,6 +205,59 @@ class ChessPiece {
       break;
       
       case 'r': //Black Rook
+      
+      if(BitBoard[To] != 'p' ||BitBoard[To] != 'r'||BitBoard[To] != 'b'||BitBoard[To] != 'n'||BitBoard[To] != 'q'||BitBoard[To] != 'k'){
+        if(From == 0||From == 8||From == 16||From == 24||From == 32||From == 40||From == 48||From == 56){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 ||To-From == 7|| To-From == 6|| To-From == 5|| To-From == 4 || To-From == 3 || To-From == 2||To-From == 1||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+      if(From == 1||From == 9 ||From == 17||From == 25||From == 33||From == 41||From == 49||From == 57){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 || To-From == 6|| To-From == 5|| To-From == 4 || To-From == 3 || To-From == 2||To-From == 1||To-From == -1||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+      if(From == 2||From == 10 ||From == 18||From == 26||From == 34||From == 42||From == 50||From == 58){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 || To-From == 5|| To-From == 4 || To-From == 3 || To-From == 2||To-From == 1||To-From == -1||To-From == -2||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+       if(From == 3||From == 11 ||From == 19||From == 27||From == 35||From == 43||From == 51||From == 59){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 ||To-From == 4 || To-From == 3 || To-From == 2||To-From == 1||To-From == -1||To-From == -2||To-From == -3||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+       if(From == 4||From == 12 ||From == 20||From == 28||From == 36||From == 44||From == 52||From == 60){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 ||To-From == 3 || To-From == 2||To-From == 1||To-From == -1||To-From == -2||To-From == -3||To-From == -4||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+       if(From == 5||From == 13 ||From == 21||From == 29||From == 37||From == 45||From == 53||From == 61){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 ||To-From == 2||To-From == 1||To-From == -1||To-From == -2||To-From == -3||To-From == -4||To-From == -5||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+             if(From == 6||From == 14 ||From == 22||From == 30||From == 38||From == 46||From == 54||From == 62){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8||To-From == 1||To-From == -1||To-From == -2||To-From == -3||To-From == -4||To-From == -5||To-From == -6||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+           if(From == 7||From == 15 ||From == 23||From == 31||From == 39||From == 47||From == 55||From == 63){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8||To-From == -1||To-From == -2||To-From == -3||To-From == -4||To-From == -5||To-From == -6||To-From == -7||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+      }
+        if(BitBoard[To] == 'p' ||BitBoard[To] == 'r' ||BitBoard[To] == 'b'||BitBoard[To] == 'n'||BitBoard[To] == 'q'||BitBoard[To] == 'k'){
+          return false;
+        }
+        if(BitBoard[To] == 'P'||BitBoard[To] =='Q'||BitBoard[To] =='B'||BitBoard[To] == 'N'||BitBoard[To] == 'R'){
+          IsitLegal = true;
+        }
+        if(To > 63 ||To < 0){ //Returns false if the knight is moved off the board
+        return false;
+      }
+        
         
       break;
             
@@ -211,8 +265,25 @@ class ChessPiece {
        if(To-From == 17 ||To-From == 15 ||To-From == 10 ||To-From == 6 ||To-From == -6 ||To-From ==-10 ||To-From == -15||To-From == -17){ //Tests to make sure a knight is moved to a square that is available to it 
          IsitLegal = true;
        }
-       else{ // returns false if the knight is not moved to a legal square 
-         return false;
+      if(From == 0||From == 8||From == 16||From == 24||From == 32||From == 40||From == 48||From == 56){
+        if(To-From == -17||To-From == -10||To-From == 6||To-From == 8||To-From == 15){
+          return false;
+        }
+      }
+        if(From == 1||From == 9 ||From == 17||From == 25||From == 33||From == 41||From == 49||From == 57){
+          if(To-From  == 6||To-From == -10){
+            return false;
+          }
+       }
+       if(From == 6||From == 14 ||From == 22||From == 30||From == 38||From == 46||From == 54||From == 62){
+         if(To-From == -6|| To-From == 10){
+           return false;
+         }
+       }
+       if(From == 7||From == 15 ||From == 23||From == 31||From == 39||From == 47||From == 55||From == 63){
+         if(To-From == 17||To-From == 10||To-From == -6||To-From == -8||To-From == -15){
+           return false;
+         }
        }
        if(BitBoard[To] == 'r' ||BitBoard[To] =='n'||BitBoard[To] == 'b'||BitBoard[To] =='q'||BitBoard[To] =='k'||BitBoard[To] == 'p'){ // Condition to test if the knight is trying to move to a square occupied by a friendly piece
         return false;
@@ -228,7 +299,18 @@ class ChessPiece {
       break;      
       
       case 'b': //Black Bishop
-      
+      if(BitBoard[To] != 'p' ||BitBoard[To] != 'r'||BitBoard[To] != 'b'||BitBoard[To] != 'n'||BitBoard[To] != 'q'||BitBoard[To] != 'k'){
+      if(abs(To-From)%9 == 0||abs(To-From)%7 == 0){
+        IsitLegal = true;
+      }
+      }
+            if(BitBoard[To] == 'P'||BitBoard[To] =='Q'||BitBoard[To] =='B'||BitBoard[To] == 'N'||BitBoard[To] == 'R'){ //Condition to allow a knight to capture if it is trying to move to a square
+        IsitLegal = true;
+      }
+       if(To < 0|| To > 63){ //returns false if move is off the board
+        return false;
+      }
+        
        
       break;
       
@@ -240,10 +322,16 @@ class ChessPiece {
       if(To-From == 9||To-From == 8||To-From == 7||To-From == 1||To-From == -1||To-From == -7||To-From == -8||To-From == -9){
         IsitLegal = true;
       }
-      else{
-        return false;
-      }
-   
+   if(From == 0||From == 8||From == 16||From == 24||From == 32||From == 40||From == 48||From == 56){
+         if(To-From == -9||To-From == -1||To-From == 7){
+           return false;
+         }
+        }
+        if(From == 7||From == 15 ||From == 23||From == 31||From == 39||From == 47||From == 55||From == 63){
+          if(To-From ==  9|| To-From == 1||To-From == -7){
+            return false;
+          }
+        }
         if(BitBoard[To] == 'r' ||BitBoard[To] =='n'||BitBoard[To] == 'b'||BitBoard[To] =='q'||BitBoard[To] == 'p'||BitBoard[To] == 'k'){  // Condition to test if the king is trying to move to a square occupied by a friendly piece
          return false;
       }
@@ -283,15 +371,82 @@ class ChessPiece {
       break;
            
       case 'R': //White Rook
-       
+         if(BitBoard[To] != 'P' ||BitBoard[To] != 'R'||BitBoard[To] != 'B'||BitBoard[To] != 'N'||BitBoard[To] != 'Q'||BitBoard[To] != 'K'){
+           if(From == 0||From == 8||From == 16||From == 24||From == 32||From == 40||From == 48||From == 56){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 ||To-From == 7|| To-From == 6|| To-From == 5|| To-From == 4 || To-From == 3 || To-From == 2||To-From == 1||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+      if(From == 1||From == 9 ||From == 17||From == 25||From == 33||From == 41||From == 49||From == 57){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 || To-From == 6|| To-From == 5|| To-From == 4 || To-From == 3 || To-From == 2||To-From == 1||To-From == -1||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+      if(From == 2||From == 10 ||From == 18||From == 26||From == 34||From == 42||From == 50||From == 58){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 || To-From == 5|| To-From == 4 || To-From == 3 || To-From == 2||To-From == 1||To-From == -1||To-From == -2||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+       if(From == 3||From == 11 ||From == 19||From == 27||From == 35||From == 43||From == 51||From == 59){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 ||To-From == 4 || To-From == 3 || To-From == 2||To-From == 1||To-From == -1||To-From == -2||To-From == -3||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+       if(From == 4||From == 12 ||From == 20||From == 28||From == 36||From == 44||From == 52||From == 60){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 ||To-From == 3 || To-From == 2||To-From == 1||To-From == -1||To-From == -2||To-From == -3||To-From == -4||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+       if(From == 5||From == 13 ||From == 21||From == 29||From == 37||From == 45||From == 53||From == 61){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8 ||To-From == 2||To-From == 1||To-From == -1||To-From == -2||To-From == -3||To-From == -4||To-From == -5||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+             if(From == 6||From == 14 ||From == 22||From == 30||From == 38||From == 46||From == 54||From == 62){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8||To-From == 1||To-From == -1||To-From == -2||To-From == -3||To-From == -4||To-From == -5||To-From == -6||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+           if(From == 7||From == 15 ||From == 23||From == 31||From == 39||From == 47||From == 55||From == 63){
+        if(To-From == 56||To-From == 48||To-From == 40||To-From == 32||To-From == 24||To-From ==16 || To-From == 8||To-From == -1||To-From == -2||To-From == -3||To-From == -4||To-From == -5||To-From == -6||To-From == -7||To-From == -8||To-From == - 16||To-From ==-24||To-From == -32 ||To-From == -40||To-From == -48|| To-From == -56){
+          IsitLegal =true;
+        }
+      }
+      }
+        if(BitBoard[To] == 'P' ||BitBoard[To] == 'R' ||BitBoard[To] == 'B'||BitBoard[To] == 'N'||BitBoard[To] == 'Q'||BitBoard[To] == 'K'){
+          return false;
+        }
+        if(BitBoard[To] == 'p'||BitBoard[To] =='q'||BitBoard[To] =='b'||BitBoard[To] == 'n'||BitBoard[To] == 'r'){
+          IsitLegal = true;
+        }
+        if(To > 63 ||To < 0){ //Returns false if the knight is moved off the board
+        return false;
+      }
       break;     
       
       case 'N': //White Knight
              if(To-From == 17 ||To-From == 15 ||To-From == 10 ||To-From == 6 ||To-From == -6 ||To-From ==-10 ||To-From == -15||To-From == -17){ //Tests to make sure a knight is moved to a square that is available to it 
          IsitLegal = true;
        }
-       else{ // returns false if the knight is not moved to a legal square 
-         return false;
+     if(From == 0||From == 8||From == 16||From == 24||From == 32||From == 40||From == 48||From == 56){
+        if(To-From == -17||To-From == -10||To-From == 6||To-From == 8||To-From == 15){
+          return false;
+        }
+      }
+        if(From == 1||From == 9 ||From == 17||From == 25||From == 33||From == 41||From == 49||From == 57){
+          if(To-From  == 6||To-From == -10){
+            return false;
+          }
+       }
+       if(From == 6||From == 14 ||From == 22||From == 30||From == 38||From == 46||From == 54||From == 62){
+         if(To-From == -6|| To-From == 10){
+           return false;
+         }
+       }
+       if(From == 7||From == 15 ||From == 23||From == 31||From == 39||From == 47||From == 55||From == 63){
+         if(To-From == 17||To-From == 10||To-From == -6||To-From == -8||To-From == -15){
+           return false;
+         }
        }
        if(BitBoard[To] == 'r' ||BitBoard[To] =='n'||BitBoard[To] == 'b'||BitBoard[To] =='q'||BitBoard[To] == 'p'){ //Condition to allow a knight to capture if it is trying to move to a square
          IsitLegal = true;
@@ -317,9 +472,16 @@ class ChessPiece {
          if(To-From == 9||To-From == 8||To-From == 7||To-From == 1||To-From == -1||To-From == -7||To-From == -8||To-From == -9){
         IsitLegal = true;
       }
-      else{
-        return false;
-      }
+        if(From == 0||From == 8||From == 16||From == 24||From == 32||From == 40||From == 48||From == 56){
+         if(To-From == -9||To-From == -1||To-From == 7){
+           return false;
+         }
+        }
+        if(From == 7||From == 15 ||From == 23||From == 31||From == 39||From == 47||From == 55||From == 63){
+          if(To-From ==  9|| To-From == 1||To-From == -7){
+            return false;
+          }
+        }
         if(BitBoard[To] == 'r' ||BitBoard[To] =='n'||BitBoard[To] == 'b'||BitBoard[To] =='q'||BitBoard[To] == 'p'){ //Condition to allow a king to capture if it is trying to move to a square
          IsitLegal = true;
       }
