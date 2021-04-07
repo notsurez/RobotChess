@@ -5,6 +5,7 @@
   Other Contributers:
   Last modified: 03/12/2021
 */
+import processing.serial.*;
 
 Star[] stars;           //initialize array of Star objects (used for start menu)
 ChessPiece[][] board;   // Initialize 2d array of ChessPiece Objects
@@ -141,6 +142,9 @@ void readFen(String curFen){
       BitBoard[8*row+col] = (byte)fen.charAt(i);
       col++;
     }else if( (int)fen.charAt(i) <= 56 && (int)fen.charAt(i) >= 49) {
+      for(int j = i; j < (int)fen.charAt(i)-48; j++) {
+        BitBoard[8*row+col] = ' ';
+      }
           col += ((int)fen.charAt(i)-48);
     }
     i++;
@@ -208,6 +212,7 @@ void mouseReleased() {
           board[i][j].x = int(mouseX/gridSize)*(gridSize)+gridSize/2;
           board[i][j].y = int(mouseY/gridSize)*(gridSize)+gridSize/2;
           board[i][j].updateBB();
+          //print(toBase64(BitBoard));
         }
         
       }

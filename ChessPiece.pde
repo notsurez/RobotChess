@@ -143,7 +143,6 @@ void updateBB() {
 
     // Print BitBoard for debugging
     for(int i = 0; i < 64; i++) {
-      if(BitBoard[i] == 0) print(" ");
      print((char)BitBoard[i]);
      if(i == 7 || i == 15 || i == 23 || i == 31 || i == 39 || i == 47 || i == 55) {
        println();
