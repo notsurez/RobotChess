@@ -1,6 +1,10 @@
 Serial microPC;
 
-char[] toBase64(byte[] bb, boolean castling, boolean castling_side) {
+void uCPUinit(int which_cpu) {
+  microPC = new Serial(this, Serial.list()[which_cpu], 115200);
+}
+
+char[] toBase64(byte[] bb, boolean castling, boolean castling_side, int timeString, char turnString) {
   char charArr[] = new char[11]; 
   char temp = ':';
   for(int i = 0; i < 11; i++) {
@@ -20,7 +24,11 @@ char[] toBase64(byte[] bb, boolean castling, boolean castling_side) {
        temp += 1;
     }
   charArr[i] = temp;
+  microPC.write(temp);
   }
+  
+  microPC.write(timeString);
+  microPC.write(turnString);
   
   return charArr;
 }

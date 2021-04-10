@@ -25,8 +25,10 @@ int game_state = 2; //initialize game state variable used to toggle between (gam
 //A string storing the current board state in FEN notation
 String cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1";
 byte BitBoard[] = new byte[64];
-Boolean whites_turn = true;
+char turnState = 'P'; //P for white/player, p for black/computer
 
+int player_time = 900;
+int computer_time = 900;
 
 /*
   setup is a 
@@ -62,6 +64,9 @@ void setup() {
   board = new ChessPiece[8][8];
   readFen(cur_fen);
   //drawPieces();
+  
+  println("Initializing uCPU");
+  uCPUinit(1); //use the 2nd COM port
 }
 
 void draw() {  

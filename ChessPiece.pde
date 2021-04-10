@@ -151,7 +151,7 @@ void updateBB() {
     }
     println(" ");
     print("base64 string: ");
-    println(toBase64(BitBoard, false, false)); //the bitboard, is castling, castling queen(false) or king(true)
+    println(toBase64(BitBoard, false, false, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState)); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
 }
   
   void highlightLegal() {
