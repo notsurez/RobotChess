@@ -88,7 +88,9 @@ void draw() {
     drawPieces();
     exampleCPUAnal();
     keepTime();
+    println("running drawfun");
     stockfish.drawfunc();
+    println("made it out alive");
   break;
   default:
   }

@@ -59,7 +59,8 @@ class Engine {
  // getting from engine this:  
   String inputStr = "";
   inputStr = listen();
-  // println(inputStr);
+  println("listened");
+  //println(inputStr);
   if (inputStr!=null) {
     print(inputStr);
  
@@ -108,6 +109,7 @@ class Engine {
       if (inputStr.equals("bestmove")||inputStr.contains("bestmove")) {
         println (" !!!!!!!!!!!!!!!!!!!!!!!!!!!! bestmove 2 " + lineToSay);
       }
+        println("STUCK HERE");
       break; 
  
     default:
@@ -121,6 +123,7 @@ class Engine {
   else {
     delay(111); 
     lineToSay ++;
+    println("STUCK IN ELSE");
     guiHasToSaySomething=true;
   }
  
@@ -152,10 +155,10 @@ class Engine {
       // now the GUI sets some values in the engine
       // set hash to 32 MB
       //   guiHasToSaySomething=true;
-      say("setoption name Hash value 32\n"); 
+      say("setoption name UCI_Elo value " + str(cpu_diff) + " \n"); 
       guiHasToSaySomething=true;
  
-      say( "position startpos moves e2e4 e7e5\n");  
+      say( "position startpos moves e2e4 e7e5 Ke2\n");  
       guiHasToSaySomething=true;
  
       say("go infinite\n");
@@ -176,34 +179,13 @@ class Engine {
     case 5: 
       // init tbs
       guiHasToSaySomething=true;
-      say("setoption name NalimovCache value 1\n"); 
+      println("STUCK in 5");
+      //say("position startpos moves e2e4 e7e5 Ke2\n"); 
       delay(22);
       lineToSay ++;
       break; 
- 
-    case 6: 
-      guiHasToSaySomething=true;
-      say("setoption name NalimovPath value d:\tb;c\tb\n");
-      break;
- 
-    case 7:    
-      guiHasToSaySomething=true;
-      say( "isready\n");
-      break;
- 
-    case 8:
-      guiHasToSaySomething=true;
-      // say( "position e2e4\n");
-      println ("Here 1");
-      say( "position startpos moves e2e4 e7e5\n"); 
-      // position e2e4\ngo\n
-      break;
- 
-    case 9:    
-      guiHasToSaySomething=true;
-      //  say( "go\n");
-      say("go infinite\n");
-      // position e2e4\ngo\n
+    default:
+      println ("STUCK AFTER CASE 5");
       break;
     } // switch
     //
@@ -218,25 +200,6 @@ class Engine {
     Say function sends a message to the output stream of the process builder process 
     running the UCI chess engine. It first converts a given string to
   */
-  void say2(String message) {
-    println("saying:", message);
-    out = p.getOutputStream();
-    try {
-      byte buf[] = message.getBytes();
-      out.write(buf);
-      out.write(10);
-    }catch(Exception e) {
-      println("failed to write");
-    }
-    
-    try {
-      out.flush();
-    }catch(Exception e) {
-      println("failed to flush");
-    }
-    
-  }
-  
   void say (String str) {
  
   println(""); 
@@ -263,47 +226,22 @@ class Engine {
   // !!!!!!!!!!!!!!!!!!!!!!!! kill all speaking here  
   guiHasToSaySomething=false;
 }//func 
-  String listen2() {
-    reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-    int i;
-    String returnString = " ";
-    
-    try{
-      while(( i = reader.read()) != 13) {
-        print(i, " ");
-        if( i > 0) {
-          returnString += (char) i;
-        }
-      }
-      
-    }catch(Exception e) {
-      e.printStackTrace();
-      println("failed to read");
-    }
-    println(returnString);
-    if(returnString != " ") {
-      return returnString;
-    }else{
-       return null; 
-    }
-    
-  }
+  
   
   String listen() {
  
   // gui gets from engine
  
-  int c;
-  String inputStr = "";
-  char stop1 = (char) char(13); 
+  int c = 13;
+  String inputStr = ""; 
  
   try {
  
     // http : // stackoverflow.com/questions/22563986/understanding-getinputstream-and-getoutputstream
  
-    // while ((c=in.read()) != -1)
-    while ((c=in.read()) != 13)
+    while (c != 13)
     {
+      c=in.read();
       //  print((char) c);
       inputStr += (char) c;
     }
@@ -313,7 +251,7 @@ class Engine {
   catch (Exception e) {
     println("Can't read");
   }
- 
+
   if (inputStr != null && !inputStr.equals("")) {
     return inputStr ;
   } else {
