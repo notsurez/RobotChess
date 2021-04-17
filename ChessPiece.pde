@@ -55,7 +55,6 @@ class ChessPiece {
       bb = loadImage("wb.png");
       bk = loadImage("wk.png");
       bq = loadImage("wq.png");
-      
       wp = loadImage("bp.png");
       wr = loadImage("br.png");
       wn = loadImage("bn.png");
@@ -148,7 +147,6 @@ class ChessPiece {
 void updateBB() {
     BitBoard[bbIndex] = ' '; //Clear where the piece moved FROM
     int TobbIndex = (int) floor(x/(int)gridSize)+floor(y/(int)gridSize)*8; //Calculate new BB position
-
 
     println(BitBoard[bbIndex]); // Print which 
 
@@ -245,7 +243,6 @@ void updateBB() {
         return false;
       }
         
-        
       break;
             
       case 'n': //Black Knight
@@ -262,7 +259,6 @@ void updateBB() {
         return false;
       }
        
-       
       break;      
       
       case 'b': //Black Bishop
@@ -273,7 +269,6 @@ void updateBB() {
        if(To < 0|| To > 63){ //returns false if move is off the board
         return false;
       }
-        
        
       break;
       
@@ -298,8 +293,6 @@ void updateBB() {
         return false;
       }
       
-       
-       
       break;
       
       case 'P': // White Pawn
@@ -387,17 +380,13 @@ void updateBB() {
       if(To > 63 ||To < 0){ //Returns false if the king is moved off the board
         return false;
       }
-      
-      
-        
+ 
       break;
       
       }
     
     return IsitLegal;
   }
-  
-
   
   boolean MouseIsOver() {
     if (mouseX > x-(size/2) && mouseX < x+(size/2) && mouseY > y-(size/2) && mouseY < y+(size/2)) {

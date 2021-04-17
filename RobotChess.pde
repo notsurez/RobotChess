@@ -19,7 +19,7 @@ Button black, white, random;
 
 //setup variables
 char which_side = 'r';
-int cpu_diff = 1350;
+int cpu_diff = 800;
 int player_time = 900;
 int computer_time = 900;
 boolean show_analysis = true;
@@ -36,6 +36,7 @@ String cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1";
 byte BitBoard[] = new byte[64];
 char turnState = 'P'; //P for white/player, p for black/computer
 
+//long frameCounter = 0;
 
 /*
   setup is a 
@@ -73,7 +74,6 @@ void setup() {
 }
 
 void draw() {  
-  
   switch(game_state){
   //Start Menu
   case 0:
@@ -89,12 +89,12 @@ void draw() {
     exampleCPUAnal();
     keepTime();
     //println("running drawfun");
-    //stockfish.drawfunc();
+    stockfish.drawfunc(); //if (frameCounter % 10 == 0) ...
+    //frameCounter++;
     //println("made it out alive");
   break;
   default:
   }
-  
   
 }//end "draw" function
 
@@ -103,7 +103,6 @@ void drawBoard(){
   color g_color;
   color g_color_w = color(246, 232, 177);
   color g_color_b = color(10, 130, 30);
-  int num = 0;
   g_color = g_color_w;
   
   for(float i = 0; i<8; i++){
@@ -119,8 +118,6 @@ void drawBoard(){
         }else{
           g_color = g_color_b;
         }
-
-        num++;
         
       }//inner for loop
       
@@ -224,11 +221,11 @@ void mousePressed() {
     }
   }
   // If the start menu is pressed, advance the game menu.
- if(start_button.MouseIsOver() && game_state !=2) {
+ if(start_button.MouseIsOver() && game_state !=2 ) {
   game_state = 2; 
-  while(stockfish.send_config()){}
+  stockfish.send_config();
  }
- if(menu_button.MouseIsOver() && game_state !=1) {
+ if(menu_button.MouseIsOver()  && game_state != 2) {
   game_state = 1; 
  }
  
@@ -244,7 +241,6 @@ void mouseReleased() {
           board[i][j].y = int(mouseY/gridSize)*(gridSize)+gridSize/2;
           board[i][j].updateBB();
         }
-        
       }
     }
   }
@@ -273,7 +269,6 @@ void exampleCPUAnal(){
   if (computer_time%60 < 10) computer_displayTime = str(computer_time/60) + ":0" + str(computer_time%60);
   text(computer_displayTime, cpuX+50, cpuY+40);
   
-  
   //White Clock and Player
   textSize(25);
   fill(0);
@@ -287,8 +282,6 @@ void exampleCPUAnal(){
   if (player_time%60 < 10) player_displayTime = str(player_time/60) + ":0" + str(player_time%60);
   text(player_displayTime, playerX+50, playerY+40);
   
-  
-  
   //Indicator Bar
   fill(0);
   rect(boardSize, 0, 50, cpuAnal);
@@ -298,12 +291,11 @@ void exampleCPUAnal(){
   fill(0);
   text("+M2", boardSize, height/2);
   
-  
   text("Indication for best moves here", boardSize+ 50, 300);
   
   text("Menu Buttons down here", boardSize+50, height-70);
-  
 }
+
 //Star class for start menu background
 class Star {
   float x, y;
@@ -349,6 +341,7 @@ class Button {
    t = txt_color;
    ts = text_size;
  }
+ 
  void display() {
    fill(c);
    rect(x-(w/2),y-(h/2),w,h,10);
@@ -366,5 +359,4 @@ class Button {
     }
     return false;
   }
- 
 }
