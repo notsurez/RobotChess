@@ -147,9 +147,10 @@ class ChessPiece {
   }
   
 void updateBB() {
+  println("UPDATING BB");
     int TobbIndex = (int) floor(x/(int)gridSize)+floor(y/(int)gridSize)*8; //Calculate new BB position
 
-    addMove(bbIndex, TobbIndex, true);
+    
     BitBoard[bbIndex] = ' '; //Clear where the piece moved FROM
 
     println(BitBoard[bbIndex]); // Print which 
@@ -165,25 +166,27 @@ void updateBB() {
     println("UPDATE:", bbIndex, "=", pieceType);
 
     // Print BitBoard for debugging
-//    println("Print BitBoard for debugging");
-//    for(int i = 0; i < 64; i++) {
-//     print((char)BitBoard[i]);
-//     if(i == 7 || i == 15 || i == 23 || i == 31 || i == 39 || i == 47 || i == 55) {
-//       println();
-//     }
-//    }
-//    println(" ");
+    println("Print BitBoard for debugging");
+    for(int i = 0; i < 64; i++) {
+     print((char)BitBoard[i]);
+     if(i == 7 || i == 15 || i == 23 || i == 31 || i == 39 || i == 47 || i == 55) {
+       println();
+     }
+    }
+    println(" ");
     //print("base64 string: ");
     //println(toBase64(BitBoard, false, false, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState)); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
+    
+    //addMove(bbIndex, TobbIndex, true);
 }
   
   void highlightLegal() {
     if(selected){
-      println(pieceType, " on ",bbIndex);
+      //println(pieceType, " on ",bbIndex);
       for(int i = 0; i < 64; i++) {
         if(isLegal(bbIndex,i)){
           fill(40, 40, 80);
-          println(bbIndex, " => ", i);
+          //println(bbIndex, " => ", i);
           ellipse(gridSize/2 + (i%8)*(gridSize),gridSize/2 + (floor(i/8))*(gridSize),gridSize/4,gridSize/4);
         }
       }
@@ -424,13 +427,22 @@ void addMove(int fromLocation, int toLocation, boolean tellStockfish) {
   heardBestmove = false;
   if (fromLocation == toLocation) return;
   //if (turnState == 'P') movesHistory = movesHistory + "\n"; //P for white/player, p for black/computer
+  if (cherry < 50) return;
+  cherry = 0;
+  
   movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + " ";
   
   if (tellStockfish) {
   stockfish.say(movesHistory);
   delay(20);
   stockfish.say("go movetime 1000"); //replace the 1000 with the amount of time to run engine in millis
-  delay(2000);
+  m = millis();
+  for(int t = 1; t < 20; t++) {
+  delay(100);
+  print("=");
+  keepTime();
+  }
+  println(">");
   while(!heardBestmove) {
   stockfish.listen();
   delay(20);

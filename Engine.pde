@@ -23,7 +23,6 @@ boolean guiHasToSaySomething = true;
 
 int delayPeriod = 11;
 
-
 class Engine {
   ProcessBuilder pb;
   Process p = null;
@@ -32,11 +31,8 @@ class Engine {
   OutputStream out  = null;
   BufferedReader reader;
   
-  Engine(String path) {
-    
+  Engine(String path) { 
     pb = new ProcessBuilder(path);
-  
-    
   }
   
   void init() {
@@ -112,11 +108,17 @@ String listen() {
     heardBestmove = inputStr.contains("bestmove");
     if (heardBestmove) {
       println(inputStr);
-      String moveString;
-      moveString = inputStr.substring(10, inputStr.indexOf("ponder")-1);
+      String moveString = "";
+      
+      if ( inputStr.contains("ponder")) moveString = inputStr.substring(10, inputStr.indexOf("ponder")-1);
+      if (!inputStr.contains("ponder")) {
+        moveString = inputStr.substring(10, 14); //the game is over btw
+      println("GG");
+      delay(10000);
+      }
       print("move string = ");
       println(moveString);
-      if (moveString.length() == 4) { //move the piece
+      if (moveString.length() == 4 && !moveString.contains("(non")) { //move the piece
         int fromChar = (int) moveString.charAt(0) - 97;
         int  fromInt  = (int) moveString.charAt(1) - 48;
         int toChar   = (int) moveString.charAt(2) - 97;
@@ -147,7 +149,7 @@ String listen() {
       println("Computer PIECE REMOVED ", (char)BitBoard[toPos], " on (", toPos%8, ",",floor(toPos/8), ")"  );
     }
 
-    movesHistory = movesHistory + bbCoordString(fromPos) + bbCoordString(toPos) + " ";
+    if (fromPos != toPos) movesHistory = movesHistory + bbCoordString(fromPos) + bbCoordString(toPos) + " ";
 
     fromPos = toPos;
     BitBoard[fromPos] = oldPiece;
