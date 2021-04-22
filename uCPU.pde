@@ -85,6 +85,9 @@ void keepTime() {
    
    if(turnState == 'P') {
      player_time--;
+     print("Emulated clock  communications --> ");
+     println(str(toBase64(BitBoard, false, false, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
+  
    }else {
     computer_time--; 
    }

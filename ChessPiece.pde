@@ -29,14 +29,7 @@ class ChessPiece {
   
   ChessPiece(char pt, float xpos, float ypos,float s, int bitBI){
     imageMode(CENTER);
-    if(which_side == 'r') {
-      int pick = ceil(random(2));
-      if(pick == 1) {
-        which_side = 'b';
-      }else{
-        which_side = 'w';
-      }
-    }
+
     if(which_side == 'w'){
       wp = loadImage("wp.png");
       wr = loadImage("wr.png");

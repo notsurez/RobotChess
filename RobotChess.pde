@@ -48,9 +48,15 @@ float playerY = 180;
 int game_state = 0; //initialize game state variable used to toggle between (game, menu, endgame, etc)
 
 long cherry = 0;
+boolean blk_cherry = false;
+
+char newPiece = ' ';
+int bbcIndex = 420;
 
 //A string storing the current board state in FEN notation
-String cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1";
+String cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+String blk_fen = "rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 byte BitBoard[] = new byte[64];
 char turnState = 'P'; //P for white/player, p for black/computer
 
@@ -60,9 +66,6 @@ String movesHistory = " moves ";
 boolean castling_occured = false;
 boolean castline_side = false;      //false = queenside, true = kingside
 
-/*
-  setup is a 
-*/
 void setup() { 
   for(int i = 0; i < 64; i++) BitBoard[i] = ' ';
   
@@ -81,9 +84,9 @@ void setup() {
   start_button = new Button("Start Game", width/2, height/2, 300, 75, color(255), color(0), 50);
   menu_button = new Button("Setup Game", width/2, height/2+100, 300, 75, color(255), color(0), 50);
   random = new Button("Rand", width/2, 150, 60, 60, color(255), color(0), 20);
-  random.active = true;
   white = new Button("White", width/2-150, 150, 60, 60, color(255), color(0), 20);
   black = new Button("Black", width/2+150, 150, 60, 60, color(0), color(255), 20);
+  white.active = true;
   
   diff_slider = new Button(" ", width/2, 300, 30, 50, color(40), color(0), 20);
   
@@ -129,6 +132,8 @@ void draw() {
   default:
   }
   
+  if (bbcIndex == 400) updatePieces();
+  if (bbcIndex != 420) bbcIndex = 400;
 }//end "draw" function
 
 //Function to draw the chess board itself, string for which side the player is on
@@ -203,7 +208,7 @@ void drawPieces() {
   }
 }
 
-void updatePieces(char newPiece, int bbIndex) {
+void updatePieces() {
   
   for (int i = 0; i<8; i++){
     for (int j = 0; j<8; j++) { 
@@ -214,17 +219,17 @@ void updatePieces(char newPiece, int bbIndex) {
     }
   }
   
-        bbIndex = (int) floor(pressed_x/(int)gridSize)+floor(pressed_y/(int)gridSize)*8;
+        bbcIndex = (int) floor(pressed_x/(int)gridSize)+floor(pressed_y/(int)gridSize)*8;
   int TobbIndex = (int) floor(the_x/(int)gridSize)+floor(the_y/(int)gridSize)*8;
   
   if(TobbIndex != ' ') {
     BitBoard[TobbIndex] = ' ';
   }
   
-  BitBoard[bbIndex] = ' ';
+  BitBoard[bbcIndex] = ' ';
   BitBoard[TobbIndex] = (byte)newPiece;
   turnState = 'C';
-  addMove(bbIndex, TobbIndex, true);
+  addMove(bbcIndex, TobbIndex, true);
   turnState = 'P';
   
       // Print BitBoard for debugging
@@ -272,6 +277,7 @@ void updatePieces(char newPiece, int bbIndex) {
     println("UPDATE:", bbIndex, "=", pieceType);
     */
   
+  bbcIndex = 420;
 } //end of update pieces
 
 /*
@@ -357,18 +363,28 @@ void mousePressed() {
   white.active = true; 
   black.active = false;
   random.active = false;
+  cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
  }
  if(black.MouseIsOver()  && game_state == 1) {
   which_side = 'b';
    white.active = false; 
   black.active = true;
   random.active = false;
+  cur_fen = blk_fen;
  }
  if(random.MouseIsOver()  && game_state == 1) {
-   which_side = 'r';
   white.active = false; 
   black.active = false;
   random.active = true;
+  int pick = ceil(random(2));
+      if(pick == 1) {
+        which_side = 'b';
+        cur_fen = blk_fen;
+      }else{
+        which_side = 'w';
+        cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+      }
+    
  }
  if(diff_slider.MouseIsOver() && game_state == 1) {
    diff_slider.active = true;
@@ -400,7 +416,8 @@ void mouseReleased() {
           board[i][j].y = int(mouseY/gridSize)*(gridSize)+gridSize/2;
           //board[i][j].updateBB();
 
-          updatePieces((char) BitBoard[i+(8*j)], board[i][j].bbIndex);
+          newPiece = (char) BitBoard[i+(8*j)]; 
+          bbcIndex = board[i][j].bbIndex;
         }
       }
     }
