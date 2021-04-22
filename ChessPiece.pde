@@ -437,7 +437,7 @@ void addMove(int fromLocation, int toLocation, boolean tellStockfish) {
   delay(20);
   stockfish.say("go movetime 1000"); //replace the 1000 with the amount of time to run engine in millis
   m = millis();
-  for(int t = 1; t < 20; t++) {
+  for(int t = 1; t < 30; t++) {
   delay(100);
   print("=");
   keepTime();

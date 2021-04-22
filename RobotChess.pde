@@ -28,6 +28,7 @@ boolean show_analysis = true;
 //Global variables for the size of different elements in the GUI, I should have made this dynamic
 int boardSize = 800;
 float gridSize = boardSize/8;
+
 int pieceSize = (int)gridSize;
 
 int pressed_x = 0;
