@@ -27,6 +27,9 @@ class ChessPiece {
   boolean firstMove = false;
   boolean legalMoves[] = new boolean[64];
   boolean first = true;
+  boolean whiteincheck = false;
+  boolean blackincheck = false;
+  boolean incheck[] = new boolean[64];
   //byte BitBoard[] = new byte[64];
   
   ChessPiece(char pt, float xpos, float ypos,float s, int bitBI){
@@ -238,6 +241,35 @@ void fillArray() {
     }
 }
 }
+  void testcheck(int From){
+    boolean forwardpath[] = new boolean[64];
+    boolean backwardpath[] = new boolean[64];
+    
+    for(int i = 0; i < 64; i++) {
+    if(isLegal1(From, i)&&whiteincheck == true) {
+      forwardpath[From] = true;
+    }
+    else{
+      forwardpath[From] = false;
+    }
+  }
+   whiteincheck = false;
+   for(int i = 63; i > -1; i--) {
+    if(isLegal2(From, i)&&whiteincheck == true) {
+      backwardpath[From] = true;
+    }else{
+      backwardpath[From] = false;
+    }
+   }
+   for(int i = 0; i < 64; i++) {
+     if(forwardpath[i] && backwardpath[i]){
+      incheck[i] = true;
+     }else{
+       incheck[i] = false;
+     }
+   }
+  }
+    
   
   boolean blockedup = false, blockeddown = false, blockedleft = false, blockedright = false, blockednorthwest = false, blockednortheast = false, blockedsoutheast = false, blockedsouthwest = false;
   //Tim, put your logic in here
@@ -284,6 +316,10 @@ void fillArray() {
       if((To-From == 7||To-From == 9) && (BitBoard[To] == 'P'||BitBoard[To] =='Q'||BitBoard[To] =='B'||BitBoard[To] == 'N'||BitBoard[To] == 'R')){ // Condition to test if the pawn is making a capture
         IsitLegal = true;
       }
+      if((To-From == 7||To-From == 9)&& BitBoard[To] == 'K'){
+        whiteincheck = true;
+        return false;
+      }
 
       if(To > 63|| To < 0){ //returns false if move is off the board
         return false;
@@ -307,6 +343,10 @@ void fillArray() {
        if(BitBoard[To] == 'R'||BitBoard[To] == 'N'||BitBoard[To] == 'B'||BitBoard[To] == 'Q'||BitBoard[To] == 'P'){
       blockeddown = true;
       IsitLegal = true;
+      if(BitBoard[To] == 'K'){
+        blockeddown = true;
+        whiteincheck = true;
+        return false;
      }
      }
      if((y_2 == y_1&&(x_2 < x_1)&&(To != From))){
@@ -326,6 +366,11 @@ void fillArray() {
       blockedright = true;
       IsitLegal = true;
        }
+         if(BitBoard[To] == 'K'){
+        blockedright = true;
+        whiteincheck = true;
+        return false;
+     }
      }
      
         if(To > 63 ||To < 0){ //Returns false if the knight is moved off the board
@@ -337,6 +382,10 @@ void fillArray() {
      if((abs(m) == 0.5||abs(m) == 2)&&(d == sqrt(5))){
        IsitLegal = true;
        if(BitBoard[To] == 'r' ||BitBoard[To] =='n'||BitBoard[To] == 'b'||BitBoard[To] =='q'||BitBoard[To] =='k'||BitBoard[To] == 'p'){ // Condition to test if the knight is trying to move to a square occupied by a friendly piece
+        return false;
+     }
+       if(BitBoard[To] == 'K'){
+        whiteincheck = true;
         return false;
      }
      }
@@ -357,6 +406,11 @@ void fillArray() {
           blockedsouthwest = true;
           IsitLegal = true;
         }
+          if(BitBoard[To] == 'K'){
+        blockedsouthwest = true;
+        whiteincheck = true;
+        return false;
+     }
       }
       if((m == 1)&&(y_2 > y_1)&&(blockedsoutheast == false)){
         IsitLegal = true;
@@ -368,6 +422,11 @@ void fillArray() {
           blockedsoutheast = true;
           IsitLegal = true;
         }
+          if(BitBoard[To] == 'K'){
+        blockedsoutheast = true;
+        whiteincheck = true;
+        return false;
+     }
       }
       if((m == -1)&&(y_2 < y_1)){
         IsitLegal = true;
@@ -394,6 +453,11 @@ void fillArray() {
           blockedsouthwest = true;
           IsitLegal = true;
         }
+          if(BitBoard[To] == 'K'){
+        blockedsouthwest = true;
+        whiteincheck = true;
+        return false;
+     }
       }
       if((m == 1)&&(y_2 > y_1)&&(blockedsoutheast == false)){
         IsitLegal = true;
@@ -405,6 +469,11 @@ void fillArray() {
           blockedsoutheast = true;
           IsitLegal = true;
         }
+          if(BitBoard[To] == 'K'){
+        blockedsoutheast = true;
+        whiteincheck = true;
+        return false;
+     }
       }
       if((m == -1)&&(y_2 < y_1)){
         IsitLegal = true;
@@ -435,6 +504,11 @@ void fillArray() {
       blockeddown = true;
       IsitLegal = true;
      }
+       if(BitBoard[To] == 'K'){
+        blockeddown = true;
+        whiteincheck = true;
+        return false;
+     }
      }
      if((y_2 == y_1&&(x_2 < x_1)&&(To != From))){
          IsitLegal = true;
@@ -453,6 +527,11 @@ void fillArray() {
       blockedright = true;
       IsitLegal = true;
        }
+         if(BitBoard[To] == 'K'){
+        blockedright = true;
+        whiteincheck = true;
+        return false;
+     }
      }
      
         if(To > 63 ||To < 0){ //Returns false if the knight is moved off the board
@@ -736,6 +815,10 @@ void fillArray() {
             }
       if((To-From == 7||To-From == 9) && (BitBoard[To] == 'P'||BitBoard[To] =='Q'||BitBoard[To] =='B'||BitBoard[To] == 'N'||BitBoard[To] == 'R')){ // Condition to test if the pawn is making a capture
         IsitLegal = true;
+          if(BitBoard[To] == 'K'){
+        whiteincheck = true;
+        return false;
+     }
       }
 
       if(To > 63|| To < 0){ //returns false if move is off the board
@@ -753,6 +836,11 @@ void fillArray() {
        if(BitBoard[To] == 'R'||BitBoard[To] == 'N'||BitBoard[To] == 'B'||BitBoard[To] == 'Q'||BitBoard[To] == 'P'){
       blockedup = true;
       IsitLegal = true;
+     }
+       if(BitBoard[To] == 'K'){
+        blockedup = true;
+        whiteincheck = true;
+        return false;
      }
      }
      if((x_2 == x_1&&(y_2 > y_1)&&(To != From))){
@@ -772,6 +860,11 @@ void fillArray() {
       blockedleft = true;
       IsitLegal = true;
        }
+         if(BitBoard[To] == 'K'){
+        blockedleft = true;
+        whiteincheck = true;
+        return false;
+     }
      }
      if((y_2 == y_1&&(x_2 > x_1)&&(To != From))){
        IsitLegal = true;
@@ -792,6 +885,10 @@ void fillArray() {
        if(BitBoard[To] == 'r' ||BitBoard[To] =='n'||BitBoard[To] == 'b'||BitBoard[To] =='q'||BitBoard[To] =='k'||BitBoard[To] == 'p'){ // Condition to test if the knight is trying to move to a square occupied by a friendly piece
         return false;
      }
+       if(BitBoard[To] == 'K'){
+        whiteincheck = true;
+        return false;
+     }
      }
       if(To > 63 ||To < 0){ //Returns false if the knight is moved off the board
         return false;
@@ -810,6 +907,11 @@ void fillArray() {
           blockednorthwest = true;
           IsitLegal = true;
         }
+          if(BitBoard[To] == 'K'){
+        blockednorthwest = true;
+        whiteincheck = true;
+        return false;
+     }
       }
       if((m == -1)&&(y_2 < y_1)&&(blockednortheast == false)){
         IsitLegal = true;
@@ -821,6 +923,11 @@ void fillArray() {
           blockednortheast = true;
           IsitLegal = true;
         }
+          if(BitBoard[To] == 'K'){
+        blockednortheast= true;
+        whiteincheck = true;
+        return false;
+     }
       }
       if(( m == 1)&&(y_2 > y_1)){
         IsitLegal = true;
@@ -848,6 +955,11 @@ void fillArray() {
           blockednorthwest = true;
           IsitLegal = true;
         }
+          if(BitBoard[To] == 'K'){
+        blockednorthwest= true;
+        whiteincheck = true;
+        return false;
+     }
       }
       if((m == -1)&&(y_2 < y_1)&&(blockednortheast == false)){
         IsitLegal = true;
@@ -859,6 +971,11 @@ void fillArray() {
           blockednortheast = true;
           IsitLegal = true;
         }
+          if(BitBoard[To] == 'K'){
+        blockednortheast = true;
+        whiteincheck = true;
+        return false;
+     }
       }
       if(( m == 1)&&(y_2 > y_1)){
         IsitLegal = true;
@@ -882,6 +999,11 @@ void fillArray() {
       blockedup = true;
       IsitLegal = true;
      }
+       if(BitBoard[To] == 'K'){
+        blockedup = true;
+        whiteincheck = true;
+        return false;
+     }
      }
      if((x_2 == x_1&&(y_2 > y_1)&&(To != From))){
          IsitLegal = true;
@@ -900,6 +1022,11 @@ void fillArray() {
       blockedleft = true;
       IsitLegal = true;
        }
+         if(BitBoard[To] == 'K'){
+        blockedleft = true;
+        whiteincheck = true;
+        return false;
+     }
      }
      if((y_2 == y_1&&(x_2 > x_1)&&(To != From))){
        IsitLegal = true;
