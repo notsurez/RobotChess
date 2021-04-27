@@ -13,9 +13,8 @@ import java.io.*;
   -Say
       * Sends a string to the engine using process builder io streams
   
-  Written by: Christian Brazeau
-  Other Contributers:
-  Last modified: 03/12/2021
+ Written by: Christian Brazeau, Timothy Reichert, Peter Taranto
+  Last modified: 04/27/2021
 */
 
 int lineToSay = -1; // ????
@@ -375,16 +374,15 @@ void say2 (String str) {
 
 void send_config() {
     String stringToSend;
+    this.say("ucinewgame");
+    delay(20);
     stringToSend = "setoption name UCI_Elo value " + str(cpu_diff);
-    this.listen();
     delay(20);
     this.say(stringToSend);
     delay(20);
     this.say("isready");
     delay(20);
     this.listen();
-    delay(20);
-    this.say("ucinewgame");
     delay(20);
   }
 }// end of class
