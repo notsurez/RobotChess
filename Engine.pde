@@ -13,12 +13,15 @@ import java.io.*;
   -Say
       * Sends a string to the engine using process builder io streams
   
- Written by: Christian Brazeau, Timothy Reichert, Peter Taranto
-  Last modified: 04/27/2021
+  Written by: Christian Brazeau
+  Other Contributers:
+  Last modified: 03/12/2021
 */
 
 int lineToSay = -1; // ????
 boolean guiHasToSaySomething = true; 
+
+boolean promoted_cherry = false;
 
 int delayPeriod = 11;
 
@@ -128,10 +131,17 @@ String listen() {
         moveString = inputStr.substring(10, 14); //the game is over btw
         game_gg = true;
       println("GG");
-      delay(10000);
+      //delay(10000);
       }
       print("move string = ");
       println(moveString);
+      if (moveString.length() == 5) {
+        promoted_cpu_pawn = moveString.charAt(4);
+        moveString = moveString.substring(0, 4);
+        print("Computer promoted pawn to ");
+        println(promoted_cpu_pawn);
+        promoted_cherry = true;
+      }
       if (moveString.length() == 4 && !moveString.contains("(non")) { //move the piece
         int fromChar = (int) moveString.charAt(0) - 97;
         int  fromInt  = (int) moveString.charAt(1) - 48;
@@ -168,6 +178,8 @@ String listen() {
           BitBoard[0]  = ' ';
         }
         
+        
+        
         print("Emulated serial communication  --> ");
         println(str(toBase64(BitBoard, false, false, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
         //the turn indicated is correct
@@ -183,9 +195,23 @@ String listen() {
       println("Computer PIECE REMOVED ", (char)BitBoard[toPos], " on (", toPos%8, ",",floor(toPos/8), ")"  );
     }
 
-    if (fromPos != toPos) movesHistory = movesHistory + bbCoordString(fromPos) + bbCoordString(toPos) + " ";
+    if (fromPos != toPos && promoted_cherry == false) movesHistory = movesHistory + bbCoordString(fromPos) + bbCoordString(toPos) + " ";
+    if (fromPos != toPos && promoted_cherry == true)  movesHistory = movesHistory + bbCoordString(fromPos) + bbCoordString(toPos) + promoted_cpu_pawn + " ";
+    promoted_cherry = false;
+    
+  if (oldPiece == 'p' && toPos > 55) {
+   println("promoting the pawn");
+   print("frompos: ");
+   println(fromPos);
+   print("topos: ");
+   println(toPos);
+   print("promoting it to ");
+   println(promoted_cpu_pawn);
+  }
 
+    int old_toPos = toPos;
     fromPos = toPos;
+    if (oldPiece == 'p' && old_toPos > 55) oldPiece = (byte)promoted_cpu_pawn;
     BitBoard[fromPos] = oldPiece;
     
     //board[fromChar][8 - fromInt].selected = true;
@@ -374,15 +400,16 @@ void say2 (String str) {
 
 void send_config() {
     String stringToSend;
-    this.say("ucinewgame");
-    delay(20);
     stringToSend = "setoption name UCI_Elo value " + str(cpu_diff);
+    //this.listen();
     delay(20);
     this.say(stringToSend);
     delay(20);
     this.say("isready");
     delay(20);
     this.listen();
+    delay(20);
+    this.say("ucinewgame");
     delay(20);
   }
 }// end of class

@@ -1,8 +1,9 @@
 /*
   Driver file for the the "Robot Chess" project
   
-  Written by: Christian Brazeau, Timothy Reichert, Peter Taranto
-  Last modified: 04/27/2021
+  Written by: Christian Brazeau
+  Other Contributers:
+  Last modified: 03/12/2021
 */
 
 import processing.serial.*;
@@ -37,6 +38,7 @@ int the_y = 0;
 int cpuAnal = 0; //centipawns or number of moves until forced mate
 boolean forced_mate = false;
 boolean game_gg = false;
+int gg_countdown = 300;
 float bar_pos = 400;
 
 float cpuY = 60;
@@ -57,14 +59,18 @@ String blk_fen = "rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 byte BitBoard[] = new byte[64];
 byte TempBoard[] = new byte[64];
+
 char turnState = 'P'; //P for white/player, p for black/computer
 
 String movesHistory = " moves ";
+String evalString = "e2e4";
 //long frameCounter = 0;
 
 boolean castling_occured = false;
 boolean castline_side = false;      //false = queenside, true = kingside
-String evalString = "";
+
+char promoted_pawn = 'Q';     //what will the promoted pawn become
+char promoted_cpu_pawn = 'p'; //what the cpu promoted its pawn to
 
 void setup() { 
   for(int i = 0; i < 64; i++) BitBoard[i] = ' ';
@@ -91,7 +97,7 @@ void setup() {
   diff_slider = new Button(" ", width/2, 300, 30, 50, color(40), color(0), 20);
   
   resign = new Button("Resign", width - 100, height-75, 75, 60, color(255), color(0), 20);
-  
+   
   stockfish = new Engine(path);
   stockfish.init();
   
@@ -104,22 +110,30 @@ void setup() {
 
 void draw() {  
   cherry++;
+  //println((int) floor(mouseX/(int)gridSize)+floor(mouseY/(int)gridSize)*8);
+  //println((mouseX)/100 + 8*((mouseY)/100));
+  //print("mouseX: ");
+  //print(mouseX);
+  //print(" mouseY: ");
+  //println(mouseY);
   
   switch(game_state){
   //Start Menu
   case 0:
     startMenu();
   break;
+  
   //Setup Menu
   case 1:
     setup_menu();
   break;
-  // Actual Gameplay
+  
   case 2:
     drawBoard();
     drawPieces();
     keepTime();
     exampleCPUAnal();
+    
     resign.display();
     if(game_gg == true) game_state = 3;
     //println("running drawfunc");
@@ -127,9 +141,12 @@ void draw() {
     //frameCounter++;
     //println("made it out alive");
   break;
+  
   case 3:
-    lossCard();
+    if (gg_countdown >  0) gg_countdown--;
+    if (gg_countdown == 0) lossCard();
   break;
+  
   default:
   }
   
@@ -212,9 +229,9 @@ void drawPieces() {
 
 void updatePieces() {
   
-  for (int i = 0; i<8; i++){
+  for (int i = 0; i<8; i++) {
     for (int j = 0; j<8; j++) { 
-      if (board[i][j] != null){
+      if (board[i][j] != null) {
         board[i][j].x=0;
         board[i][j].y=0;
       }
@@ -223,6 +240,25 @@ void updatePieces() {
   
        bbcIndex = (int) floor(pressed_x/(int)gridSize)+floor(pressed_y/(int)gridSize)*8;
   int TobbIndex = (int) floor(the_x/(int)gridSize)+floor(the_y/(int)gridSize)*8;
+  
+  if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex ==  2) { //kingside  castle white
+          BitBoard[61] = 'R';
+          BitBoard[63] = ' ';
+        }
+        if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex == -2) { //queenside castle white
+          BitBoard[59] = 'R';
+          BitBoard[56] = ' ';
+        }
+        if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex ==  2) { //kingside  castle black
+          BitBoard[5]  = 'r';
+          BitBoard[7]  = ' ';
+        }
+        if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex == -2) { //queenside castle black
+          BitBoard[3]  = 'r';
+          BitBoard[0]  = ' ';
+        }
+        
+  if (BitBoard[bbcIndex] == 'P' && TobbIndex < 8)  newPiece = promoted_pawn;
   
   if(TobbIndex != ' ') {
     BitBoard[TobbIndex] = ' ';
@@ -233,6 +269,14 @@ void updatePieces() {
   turnState = 'C';
   addMove(bbcIndex, TobbIndex, true);
   turnState = 'P';
+  
+  for (int i = 0; i<8; i++) {
+    for (int j = 0; j<8; j++) { 
+      if (board[i][j] != null) {
+        if (board[i][j].pieceType == 'k' || board[i][j].pieceType == 'q' || board[i][j].pieceType == 'r' || board[i][j].pieceType == 'n' || board[i][j].pieceType == 'b' || board[i][j].pieceType == 'p') board[i][j].testcheck((8*i) + j);
+      }
+    }
+  }
   
       // Print BitBoard for debugging
     println("Print BitBoard for debugging");
@@ -262,14 +306,18 @@ void updatePieces() {
   
   /*
   int TobbIndex = (int) floor(x/(int)gridSize)+floor(y/(int)gridSize)*8; //Calculate new BB position
+
     
     BitBoard[bbIndex] = ' '; //Clear where the piece moved FROM
+
     println(BitBoard[bbIndex]); // Print which 
+
     if(BitBoard[TobbIndex] != 32 && BitBoard[TobbIndex] != 0) { //if the TO position contains a piece
       BitBoard[TobbIndex] = ' '; 
       board[TobbIndex%8][floor(TobbIndex/8)] = null; //Remove the piece object
       println("PIECE REMOVED ", (char)BitBoard[TobbIndex], " on (", TobbIndex%8, ",",floor(TobbIndex/8), ")"  );
     }
+
     bbIndex = TobbIndex;
     BitBoard[bbIndex] = (byte)pieceType;
     println("UPDATE:", bbIndex, "=", pieceType);
@@ -330,32 +378,6 @@ void setup_menu() {
   start_button.display();
 }
 
-void lossCard() {
-  rectMode(CENTER);
-  fill(75, 50, 200);
-  rect(width/2, height/2, width/2.5, height - 200, 20);
-  fill(200);
-  rect(width/2, height/2, width/2.6, height - 220, 20);
-  rectMode(CORNER);
-  start_button.display();
-  
-}
-
-void newGame() {
-    game_gg = false;
-    for(int i = 0; i < 8; i++) {
-     for(int j = 0; j < 8; j++) {
-      board[i][j] = null; 
-      BitBoard[i*8+j] = ' ';
-     }
-    }
-    readFen(cur_fen);
-    stockfish.send_config();
-    player_time = 900;
-    computer_time = 900;
-    movesHistory = " moves ";
-}
-
 //Built in processing function that runs whenever the mouse is clicked.
 void mousePressed() {
   pressed_x = mouseX;
@@ -363,7 +385,8 @@ void mousePressed() {
   
   for (int i = 0; i<8; i++){
     for (int j = 0; j<8; j++) { 
-      if (board[i][j] != null){
+      //do not allow picking up enemy pieces
+      if (board[i][j] != null && (board[i][j].pieceType == 'K' || board[i][j].pieceType == 'Q' || board[i][j].pieceType == 'R' || board[i][j].pieceType == 'N' || board[i][j].pieceType == 'B' || board[i][j].pieceType == 'P')) {
         if(board[i][j].MouseIsOver()) {
           board[i][j].selected = true;
         }    
@@ -371,9 +394,9 @@ void mousePressed() {
     }
   }
   // If the start menu is pressed, advance the game menu.
- if(start_button.MouseIsOver() && game_state != 2 ) {
-    newGame();
-    game_state = 2; 
+ if(start_button.MouseIsOver() && game_state != 2) {
+  newGame();
+  game_state = 2; 
  }
  if(menu_button.MouseIsOver()  && game_state != 2) {
   game_state = 1; 
@@ -409,11 +432,10 @@ void mousePressed() {
  if(diff_slider.MouseIsOver() && game_state == 1) {
    diff_slider.active = true;
  }
-  if(resign.MouseIsOver() && game_state == 2) {
+ 
+ if(resign.MouseIsOver() && game_state == 2) {
    game_gg = true;
  }
- 
- 
 } //end of mousePressed
 
 void mouseReleased() {
@@ -431,9 +453,9 @@ void mouseReleased() {
   int j = (the_new_y)/100;
   
   if (i > 7 || j > 7) println("Overflow error!"); //this should never happen
-  
     if (i < 8 && j < 8) {
-      if (board[i][j] != null){
+      //do not allow moving enemy pieces
+      if (board[i][j] != null && (board[i][j].pieceType == 'K' || board[i][j].pieceType == 'Q' || board[i][j].pieceType == 'R' || board[i][j].pieceType == 'N' || board[i][j].pieceType == 'B' || board[i][j].pieceType == 'P')) {
         if(board[i][j].MouseIsOver() && mouseX < boardSize && mouseY < boardSize) {
           board[i][j].selected = false;
           board[i][j].x = int(mouseX/gridSize)*(gridSize)+gridSize/2;
@@ -471,13 +493,13 @@ void exampleCPUAnal(){
   }
 
   if (game_gg == false) {
-  if (forced_mate == false) text(nf((float)cpuAnal/100, 2, 2), boardSize + 5, height/2);
+  if (forced_mate == false) text(nf((float)(0-cpuAnal)/100, 2, 2), boardSize + 5, height/2);
   if (forced_mate == true && cpuAnal < 0)   {
-    text("-M" + str(abs(cpuAnal)), boardSize + 5, height/2);
+    text("+M" + str(abs(cpuAnal)), boardSize + 5, height/2);
     bar_pos = 0;
   }
   if (forced_mate == true && cpuAnal > -1)  {
-    text("+M" + str(abs(cpuAnal)), boardSize + 5, height/2);
+    text("-M" + str(abs(cpuAnal)), boardSize + 5, height/2);
     bar_pos = 800;
   }
   }
@@ -492,6 +514,7 @@ void exampleCPUAnal(){
   fill(0);
   text(movesHistory, boardSize + 50, 300);
   
+  text("Your Best Move: " + evalString, boardSize + 50, height - 70);
 }
 
 //Star class for start menu background
@@ -561,4 +584,33 @@ class Button {
     }
     return false;
   }
+}
+
+void lossCard() {
+  rectMode(CENTER);
+  fill(75, 50, 200);
+  rect(width/2, height/2, width/2.5, height - 200, 20);
+  fill(200);
+  rect(width/2, height/2, width/2.6, height - 220, 20);
+  rectMode(CORNER);
+  start_button.display();
+  game_gg = true;
+}
+
+void newGame() {
+    gg_countdown = 300;
+    game_gg = false;
+    forced_mate = false;
+    cpuAnal = 0;
+    for(int i = 0; i < 8; i++) {
+     for(int j = 0; j < 8; j++) {
+      board[i][j] = null; 
+      BitBoard[i*8+j] = ' ';
+     }
+    }
+    readFen(cur_fen);
+    stockfish.send_config();
+    player_time = 900;
+    computer_time = 900;
+    movesHistory = " moves ";
 }
