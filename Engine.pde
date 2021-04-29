@@ -13,8 +13,9 @@ import java.io.*;
   -Say
       * Sends a string to the engine using process builder io streams
   
-  Written by: Christian Brazeau, Timothy Reichert, and Peter Taranto
-  Last modified: 04/29/2021
+  Written by: Christian Brazeau
+  Other Contributers:
+  Last modified: 03/12/2021
 */
 
 int lineToSay = -1; // ????
@@ -163,24 +164,32 @@ String listen() {
         if (BitBoard[fromPos] == 'K' && toPos-fromPos ==  2) { //kingside  castle white
           BitBoard[61] = 'R';
           BitBoard[63] = ' ';
+          castling_occured = true;
+          castling_side = true;
         }
         if (BitBoard[fromPos] == 'K' && toPos-fromPos == -2) { //queenside castle white
           BitBoard[59] = 'R';
           BitBoard[56] = ' ';
+          castling_occured = true;
+          castling_side = false;
         }
         if (BitBoard[fromPos] == 'k' && toPos-fromPos ==  2) { //kingside  castle black
           BitBoard[5]  = 'r';
           BitBoard[7]  = ' ';
+          castling_occured = true;
+          castling_side = true;
         }
         if (BitBoard[fromPos] == 'k' && toPos-fromPos == -2) { //queenside castle black
           BitBoard[3]  = 'r';
           BitBoard[0]  = ' ';
+          castling_occured = true;
+          castling_side = false;
         }
         
         
         
         print("Emulated serial communication  --> ");
-        println(str(toBase64(BitBoard, false, false, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
+        println(str(toBase64(BitBoard, castling_occured, castling_side, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
         //the turn indicated is correct
         byte oldPiece = BitBoard[fromPos];
         

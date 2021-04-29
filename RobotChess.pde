@@ -67,7 +67,7 @@ String evalString = "e2e4";
 //long frameCounter = 0;
 
 boolean castling_occured = false;
-boolean castline_side = false;      //false = queenside, true = kingside
+boolean castling_side = false;      //false = queenside, true = kingside
 
 char promoted_pawn = 'Q';     //what will the promoted pawn become
 char promoted_cpu_pawn = 'p'; //what the cpu promoted its pawn to
@@ -251,18 +251,26 @@ void updatePieces() {
   if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex ==  2) { //kingside  castle white
           BitBoard[61] = 'R';
           BitBoard[63] = ' ';
+          castling_occured = true;
+          castling_side = true;
         }
         if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex == -2) { //queenside castle white
           BitBoard[59] = 'R';
           BitBoard[56] = ' ';
+          castling_occured = true;
+          castling_side = false;
         }
         if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex ==  2) { //kingside  castle black
           BitBoard[5]  = 'r';
           BitBoard[7]  = ' ';
+          castling_occured = true;
+          castling_side = true;
         }
         if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex == -2) { //queenside castle black
           BitBoard[3]  = 'r';
           BitBoard[0]  = ' ';
+          castling_occured = true;
+          castling_side = false;
         }
   
   if (BitBoard[bbcIndex] == 'P' && TobbIndex < 8) newPiece = promoted_pawn;
@@ -276,13 +284,13 @@ void updatePieces() {
   addMove(bbcIndex, TobbIndex, true);
   turnState = 'P';
   
-  for (int i = 0; i<8; i++) {
-    for (int j = 0; j<8; j++) { 
-      if (board[i][j] != null) {
-        if (board[i][j].pieceType == 'k' || board[i][j].pieceType == 'q' || board[i][j].pieceType == 'r' || board[i][j].pieceType == 'n' || board[i][j].pieceType == 'b' || board[i][j].pieceType == 'p') board[i][j].testcheck((8*i) + j);
-      }
-    }
-  }
+  //for (int i = 0; i<8; i++) {
+  //  for (int j = 0; j<8; j++) { 
+  //    if (board[i][j] != null) {
+  //      if (board[i][j].pieceType == 'k' || board[i][j].pieceType == 'q' || board[i][j].pieceType == 'r' || board[i][j].pieceType == 'n' || board[i][j].pieceType == 'b' || board[i][j].pieceType == 'p') board[i][j].testcheck((8*i) + j);
+  //    }
+  //  }
+  //}
   
       // Print BitBoard for debugging
     println("Print BitBoard for debugging");
@@ -297,7 +305,7 @@ void updatePieces() {
   println(movesHistory);
   
   print("Emulated serial communications --> ");
-  println(str(toBase64(BitBoard, false, false, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
+  println(str(toBase64(BitBoard, castling_occured, castling_side, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
   
   for(int i = 0; i<64; i++) {
       board[i%8][floor(i/8)] = null;
