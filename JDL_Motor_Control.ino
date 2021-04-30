@@ -21,6 +21,8 @@ int cap_Y = 0;
 byte start = 56;
 byte finish = 7;
 
+boolean debug_print = false;
+
 //Pin connected to ST_CP of 74HC595
 #define latchPin A1
 //Pin connected to SH_CP of 74HC595
@@ -141,9 +143,9 @@ void setup() {
   
   Mag_Servo.attach(9);
   Reset_stepper();
-  Serial.println();
+  if (debug_print == true) Serial.println();
   delay(20);
-  Serial.println("Program begin");
+  if (debug_print == true) Serial.println("Program begin");
 
 //reset the board
   for(byte i = 0; i < 16; i++) {
@@ -269,26 +271,26 @@ Reserved locations:
 if (skip_castling == 0) {
       if (oldnumPieces > numPieces) {
         //elimination logic
-        Serial.println(F("A piece was eliminated."));
+        if (debug_print == true) Serial.println(F("A piece was eliminated."));
       }
 
       if (changed > 0) {
         //movement logic
-        Serial.println(F("A piece was moved."));
+        if (debug_print == true) Serial.println(F("A piece was moved."));
       }
 
-      Serial.print(F("There were previously "));
-      Serial.print(oldnumPieces);
-      Serial.print(F(" pieces on the board. Now there are "));
-      Serial.print(numPieces);
-      Serial.println(F(" pieces on the board."));
-      Serial.print(changed);
-      Serial.println(F(" pieces changed position."));      
-      Serial.print(F("The piece at location "));
-      Serial.print(from_location);
-      Serial.print(F(" moved to location "));
-      Serial.print(to_location);
-      Serial.println(F("."));
+      if (debug_print == true) Serial.print(F("There were previously "));
+      if (debug_print == true) Serial.print(oldnumPieces);
+      if (debug_print == true) Serial.print(F(" pieces on the board. Now there are "));
+      if (debug_print == true) Serial.print(numPieces);
+      if (debug_print == true) Serial.println(F(" pieces on the board."));
+      if (debug_print == true) Serial.print(changed);
+      if (debug_print == true) Serial.println(F(" pieces changed position."));      
+      if (debug_print == true) Serial.print(F("The piece at location "));
+      if (debug_print == true) Serial.print(from_location);
+      if (debug_print == true) Serial.print(F(" moved to location "));
+      if (debug_print == true) Serial.print(to_location);
+      if (debug_print == true) Serial.println(F("."));
            
       oldnumPieces = numPieces;
 
@@ -298,14 +300,14 @@ if (skip_castling == 0) {
 
 skip_castling = 0;
 
-      Serial.print(F("Decoding clock. "));
+      if (debug_print == true) Serial.print(F("Decoding clock. "));
       //decode clock
       playerTimeRemaining = 1000 * (serialPlayerinput[0] - 48);
       playerTimeRemaining = playerTimeRemaining + (100 * (serialPlayerinput[1] - 48));
       playerTimeRemaining = playerTimeRemaining + (10 * (serialPlayerinput[2] - 48));
       playerTimeRemaining = playerTimeRemaining + (serialPlayerinput[3] - 48);
       playerTimeRemaining = playerTimeRemaining - 1000;
-      Serial.println(playerTimeRemaining);
+      if (debug_print == true) Serial.println(playerTimeRemaining);
   }
 
   digitalWrite(latchPin, LOW);
@@ -316,14 +318,14 @@ skip_castling = 0;
   
 //finally, print back to the serial port
 if (millis() - lastMillis > 1000) {
-  //Serial.println(F("ROBOTCHESS"));
+  //if (debug_print == true) Serial.println(F("ROBOTCHESS"));
   lastMillis = millis();
-  //Serial.print(F("LED Board State"));
+  //if (debug_print == true) Serial.print(F("LED Board State"));
   //for(byte j = 0; j < 64; j++) {
-  //  if (j%8 == 0) Serial.println(F(" "));
-  //  Serial.print(ledBoardState[j], HEX);
+  //  if (j%8 == 0) if (debug_print == true) Serial.println(F(" "));
+  //  if (debug_print == true) Serial.print(ledBoardState[j], HEX);
   //}
-  //Serial.println(F(" "));
+  //if (debug_print == true) Serial.println(F(" "));
 }  
 }
 
@@ -363,11 +365,11 @@ return ((p/10)*16) + (p%10);
 
 void debug_message() {
   for(int i = 0; i < 66; i++) {
-    if (i%8 == 0) Serial.println(F(" "));
-    Serial.print(bitBoard[i], HEX);
-    Serial.print(F(" "));
+    if (i%8 == 0) if (debug_print == true) Serial.println(F(" "));
+    if (debug_print == true) Serial.print(bitBoard[i], HEX);
+    if (debug_print == true) Serial.print(F(" "));
   }
-  Serial.println(F(" "));
+  if (debug_print == true) Serial.println(F(" "));
 }
 
 void copyArray(int* src, int* dst, int len) {
@@ -379,25 +381,25 @@ void start_motor(byte from, byte to) {
   
 if ((from == 69) && (to == 69)) {  
   //regular piece movement
-  Serial.println(F("No pieces were moved.")); 
+  if (debug_print == true) Serial.println(F("No pieces were moved.")); 
 }
 
 if ((from < 69) && (to == 69)) {  
   //regular piece movement
-  Serial.print(F("Eliminating piece at location "));
-  Serial.print(from);
-  Serial.println(F("."));
+  if (debug_print == true) Serial.print(F("Eliminating piece at location "));
+  if (debug_print == true) Serial.print(from);
+  if (debug_print == true) Serial.println(F("."));
   motorEliminate(old_to_location);
   motorMovement(from, old_to_location);
 }
 
 if ((from < 69) && (to < 69)) {  
   //regular piece movement
-  Serial.print(F("Moving piece at location "));
-  Serial.print(from);
-  Serial.print(F(" to location "));
-  Serial.print(to);
-  Serial.println(F("."));
+  if (debug_print == true) Serial.print(F("Moving piece at location "));
+  if (debug_print == true) Serial.print(from);
+  if (debug_print == true) Serial.print(F(" to location "));
+  if (debug_print == true) Serial.print(to);
+  if (debug_print == true) Serial.println(F("."));
   motorMovement(from, to);
 }
   if (discard_cherry != 0 && false) {
@@ -407,17 +409,17 @@ if ((from < 69) && (to < 69)) {
    discard_cherry = 0;
   }
   
-  Serial.print(F("gameBoardState "));
+  if (debug_print == true) Serial.print(F("gameBoardState "));
     for(byte b = 0; b < 64; b++) {
-      if (b % 8 == 0) Serial.println(F(""));
-      Serial.print(gameBoardState[b]);
+      if (b % 8 == 0) if (debug_print == true) Serial.println(F(""));
+      if (debug_print == true) Serial.print(gameBoardState[b]);
     }
-    Serial.println(F(""));
-    Serial.println(F("Discard pile:"));
+    if (debug_print == true) Serial.println(F(""));
+    if (debug_print == true) Serial.println(F("Discard pile:"));
   for(byte nig = 0; nig < 16; nig++) {
-  Serial.print(nig + 1);
-  Serial.print(F(": "));
-  Serial.println(discardPile[nig]);
+  if (debug_print == true) Serial.print(nig + 1);
+  if (debug_print == true) Serial.print(F(": "));
+  if (debug_print == true) Serial.println(discardPile[nig]);
   }
 }
 
@@ -431,9 +433,9 @@ Reserved locations:
 */
 void motorEliminate(byte tile_eliminated) {
   //write motor driver code here
-  Serial.print(F("debug: motorEliminate("));
-  Serial.print(tile_eliminated);
-  Serial.println(F(");"));
+  if (debug_print == true) Serial.print(F("debug: motorEliminate("));
+  if (debug_print == true) Serial.print(tile_eliminated);
+  if (debug_print == true) Serial.println(F(");"));
   discardPile[number_discarded] = gameBoardState[tile_eliminated];
   number_discarded++;
   gameBoardState[tile_eliminated] = EMPTY_TILE;
@@ -443,11 +445,11 @@ void motorEliminate(byte tile_eliminated) {
 
 void motorMovement(byte tile_from, byte tile_to) {
   //write motor driver code here
-  Serial.print(F("debug: motorMovement("));
-  Serial.print(tile_from);
-  Serial.print(F(", "));
-  Serial.print(tile_to);
-  Serial.println(F(");"));
+  if (debug_print == true) Serial.print(F("debug: motorMovement("));
+  if (debug_print == true) Serial.print(tile_from);
+  if (debug_print == true) Serial.print(F(", "));
+  if (debug_print == true) Serial.print(tile_to);
+  if (debug_print == true) Serial.println(F(");"));
   gameBoardState[tile_to] = gameBoardState[tile_from];
   gameBoardState[tile_from] = EMPTY_TILE;
   Initial_Handling(tile_from, tile_to);
@@ -467,17 +469,17 @@ void Initial_Handling(byte startPass, byte finishPass){ //byte start, byte finis
   
   if (finish == 69){
     if (rgbLedColor == 'P'){
-      Serial.println(F("Starting player capture sequence"));
+      if (debug_print == true) Serial.println(F("Starting player capture sequence"));
       Player_Discard++;
       Det_Dir_Pl_Cap(start, Player_Discard);
     }
     if (rgbLedColor == 'C'){
-      Serial.println(F("Starting computer capture sequence"));
+      if (debug_print == true) Serial.println(F("Starting computer capture sequence"));
       Computer_Discard++;
       Det_Dir_Com_Cap(start, Computer_Discard);
     }
   }else{
-    Serial.println(F("Starting piece movement sequence"));
+    if (debug_print == true) Serial.println(F("Starting piece movement sequence"));
     Det_Dir(start,finish);
   }
   delay(2000);
@@ -487,23 +489,24 @@ void Initial_Handling(byte startPass, byte finishPass){ //byte start, byte finis
 void Det_Dir(byte start_loc, byte end_loc){
   Det_XY_S(start_loc);
   Det_XY_E(end_loc);
-  Serial.print(F("start x position is: "));
-  Serial.println(ST_X);
-  Serial.print(F("start y position is: "));
-  Serial.println(ST_Y);
-  Serial.print(F("final x position is: "));
-  Serial.println(FL_X);
-  Serial.print(F("final y position is: "));
-  Serial.println(FL_Y);
+  if (debug_print == true) Serial.print(F("start x position is: "));
+  if (debug_print == true) Serial.println(ST_X);
+  if (debug_print == true) Serial.print(F("start y position is: "));
+  if (debug_print == true) Serial.println(ST_Y);
+  if (debug_print == true) Serial.print(F("final x position is: "));
+  if (debug_print == true) Serial.println(FL_X);
+  if (debug_print == true) Serial.print(F("final y position is: "));
+  if (debug_print == true) Serial.println(FL_Y);
   move_mag_DE(ST_X, ST_Y);
-  Serial.println(F("Magnet Engaging"));
+  if (debug_print == true) Serial.println(F("Magnet Engaging"));
   engage_mag();
   move_to_p(FL_X, FL_Y);
-  Serial.println(F("Magnet Disengaging"));
+  if (debug_print == true) Serial.println(F("Magnet Disengaging"));
   disengage_mag();
-  Serial.println(F("move has been completed"));
-  Serial.println(F("========================================="));
-  Serial.println();
+  if (debug_print == true) Serial.println(F("move has been completed"));
+  if (debug_print == true) Serial.println(F("========================================="));
+  if (debug_print == true) Serial.println();
+  Serial.print(F("F"));
 }
 //=========================================================
 
@@ -511,42 +514,43 @@ void Det_Dir_Pl_Cap(byte start_loc_cap, int pl_cnt){
   if (pl_cnt <= 8){
     Player_Discard_X = 1150;
     Player_Discard_Y_1 += 100;
-    Serial.print(F("X discard position: "));
-    Serial.println(Player_Discard_X);
-    Serial.print(F("Y discard position: "));
-    Serial.println(Player_Discard_Y_1);
+    if (debug_print == true) Serial.print(F("X discard position: "));
+    if (debug_print == true) Serial.println(Player_Discard_X);
+    if (debug_print == true) Serial.print(F("Y discard position: "));
+    if (debug_print == true) Serial.println(Player_Discard_Y_1);
     Det_XY(start_loc_cap);
-    Serial.print(F("captured piece x location: "));
-    Serial.println(cap_X);
-    Serial.print(F("captured piece y location: "));
-    Serial.println(cap_Y);
+    if (debug_print == true) Serial.print(F("captured piece x location: "));
+    if (debug_print == true) Serial.println(cap_X);
+    if (debug_print == true) Serial.print(F("captured piece y location: "));
+    if (debug_print == true) Serial.println(cap_Y);
     move_mag_DE(cap_X, cap_Y);
-    Serial.println(F("Magnet Engaging"));
+    if (debug_print == true) Serial.println(F("Magnet Engaging"));
     engage_mag();
     move_to_p(Player_Discard_X, Player_Discard_Y_1);
-    Serial.println(F("Magnet Disengaging"));
+    if (debug_print == true) Serial.println(F("Magnet Disengaging"));
     disengage_mag();
-    Serial.println(F("move has been completed"));
+    if (debug_print == true) Serial.println(F("move has been completed"));
   }
   if (pl_cnt >= 9 and pl_cnt <= 16){
     Player_Discard_X = 1050;
     Player_Discard_Y_2 -= 100;
-    Serial.print(F("X discard position: "));
-    Serial.println(Player_Discard_X);
-    Serial.print(F("Y discard position: "));
-    Serial.println(Player_Discard_Y_2);
+    if (debug_print == true) Serial.print(F("X discard position: "));
+    if (debug_print == true) Serial.println(Player_Discard_X);
+    if (debug_print == true) Serial.print(F("Y discard position: "));
+    if (debug_print == true) Serial.println(Player_Discard_Y_2);
     Det_XY(start_loc_cap);
-    Serial.print(F("captured piece x location: "));
-    Serial.println(cap_X);
-    Serial.print(F("captured piece y location: "));
-    Serial.println(cap_Y);
+    if (debug_print == true) Serial.print(F("captured piece x location: "));
+    if (debug_print == true) Serial.println(cap_X);
+    if (debug_print == true) Serial.print(F("captured piece y location: "));
+    if (debug_print == true) Serial.println(cap_Y);
     move_mag_DE(cap_X, cap_Y);
-    Serial.println(F("Magnet Engaging"));
+    if (debug_print == true) Serial.println(F("Magnet Engaging"));
     engage_mag();
     move_to_p(Player_Discard_X, Player_Discard_Y_2);
-    Serial.println(F("Magnet Disengaging"));
+    if (debug_print == true) Serial.println(F("Magnet Disengaging"));
     disengage_mag();
-    Serial.println(F("move has been completed"));
+    if (debug_print == true) Serial.println(F("move has been completed"));
+    Serial.print(F("F"));
   }
 }
 //========================================================
@@ -555,42 +559,44 @@ void Det_Dir_Com_Cap(byte start_loc_cap, int com_cnt){
   if (com_cnt <= 8){
     Computer_Discard_X = 50;
     Computer_Discard_Y_1 += 100;
-    Serial.print(F("X discard position: "));
-    Serial.println(Computer_Discard_X);
-    Serial.print(F("Y discard position: "));
-    Serial.println(Computer_Discard_Y_1);
+    if (debug_print == true) Serial.print(F("X discard position: "));
+    if (debug_print == true) Serial.println(Computer_Discard_X);
+    if (debug_print == true) Serial.print(F("Y discard position: "));
+    if (debug_print == true) Serial.println(Computer_Discard_Y_1);
     Det_XY(start_loc_cap);
-    Serial.print(F("captured piece x location: "));
-    Serial.println(cap_X);
-    Serial.print(F("captured piece y location: "));
-    Serial.println(cap_Y);
+    if (debug_print == true) Serial.print(F("captured piece x location: "));
+    if (debug_print == true) Serial.println(cap_X);
+    if (debug_print == true) Serial.print(F("captured piece y location: "));
+    if (debug_print == true) Serial.println(cap_Y);
     move_mag_DE(cap_X, cap_Y);
-    Serial.println(F("Magnet Engaging"));
+    if (debug_print == true) Serial.println(F("Magnet Engaging"));
     engage_mag();
     move_to_p(Computer_Discard_X, Computer_Discard_Y_1);
-    Serial.println(F("Magnet Disengaging"));
+    if (debug_print == true) Serial.println(F("Magnet Disengaging"));
     disengage_mag();
-    Serial.println(F("move has been completed"));
+    if (debug_print == true) Serial.println(F("move has been completed"));
+    Serial.print(F("F"));
   }
   if (com_cnt >= 9 and com_cnt <= 16){
     Computer_Discard_X = 150;
     Computer_Discard_Y_2 -= 100;
-    Serial.print(F("X discard position: "));
-    Serial.println(Computer_Discard_X);
-    Serial.print(F("Y discard position: "));
-    Serial.println(Computer_Discard_Y_2);
+    if (debug_print == true) Serial.print(F("X discard position: "));
+    if (debug_print == true) Serial.println(Computer_Discard_X);
+    if (debug_print == true) Serial.print(F("Y discard position: "));
+    if (debug_print == true) Serial.println(Computer_Discard_Y_2);
     Det_XY(start_loc_cap);
-    Serial.print(F("captured piece x location: "));
-    Serial.println(cap_X);
-    Serial.print(F("captured piece y location: "));
-    Serial.println(cap_Y);
+    if (debug_print == true) Serial.print(F("captured piece x location: "));
+    if (debug_print == true) Serial.println(cap_X);
+    if (debug_print == true) Serial.print(F("captured piece y location: "));
+    if (debug_print == true) Serial.println(cap_Y);
     move_mag_DE(cap_X, cap_Y);
-    Serial.println(F("Magnet Engaging"));
+    if (debug_print == true) Serial.println(F("Magnet Engaging"));
     engage_mag();
     move_to_p(Computer_Discard_X, Computer_Discard_Y_2);
-    Serial.println(F("Magnet Disengaging"));
+    if (debug_print == true) Serial.println(F("Magnet Disengaging"));
     disengage_mag();
-    Serial.println(F("move has been completed"));
+    if (debug_print == true) Serial.println(F("move has been completed"));
+    Serial.print(F("F"));
   }  
 }
 //========================================================
@@ -758,13 +764,13 @@ void Det_XY_E(byte st_loc){
 //==========================================================
 
 void move_mag_DE(int PX, int PY){
-  Serial.print(F("magnet X position is: "));
-  Serial.println(mag_x);
-  Serial.print(F("magnet Y position is: "));
-  Serial.println(mag_y);
+  if (debug_print == true) Serial.print(F("magnet X position is: "));
+  if (debug_print == true) Serial.println(mag_x);
+  if (debug_print == true) Serial.print(F("magnet Y position is: "));
+  if (debug_print == true) Serial.println(mag_y);
   int dis_x = PX - mag_x;
-  Serial.print(F("The distance difference in the X is: "));
-  Serial.println(dis_x);
+  if (debug_print == true) Serial.print(F("The distance difference in the X is: "));
+  if (debug_print == true) Serial.println(dis_x);
   if (dis_x > 0){
     X_CW_Stepper(PX);
   }else if(dis_x < 0){
@@ -772,24 +778,24 @@ void move_mag_DE(int PX, int PY){
   }
   //maybe add handler for if = to 0
   int dis_y = PY - mag_y;
-  //Serial.println();
-  Serial.print(F("The distance difference in the Y is: "));
-  Serial.println(dis_y);
+  //if (debug_print == true) Serial.println();
+  if (debug_print == true) Serial.print(F("The distance difference in the Y is: "));
+  if (debug_print == true) Serial.println(dis_y);
   if (dis_y > 0){
     Y_CCW_Stepper(PY);
   }else if(dis_y < 0){
     Y_CW_Stepper(PY);
   }
-  Serial.println(F("Magnet has gotten to start location"));
+  if (debug_print == true) Serial.println(F("Magnet has gotten to start location"));
 }
 //==========================================================
 
 void move_to_p(int pmX, int pmY){
   To_Gridline();
   int dis_px = pmX - mag_x;
-  Serial.print(F("The difference in X from start to finish is: "));
-  Serial.println(dis_px);
-  Serial.println(F("Starting movement in X direction"));
+  if (debug_print == true) Serial.print(F("The difference in X from start to finish is: "));
+  if (debug_print == true) Serial.println(dis_px);
+  if (debug_print == true) Serial.println(F("Starting movement in X direction"));
   if (dis_px > 0){
     X_CW_Stepper_P(pmX);
   }else if(dis_px < 0){
@@ -803,9 +809,9 @@ void move_to_p(int pmX, int pmY){
   }
 
   int dis_py = pmY - mag_y;
-  Serial.print(F("The distance in Y from start to finish is: "));
-  Serial.println(dis_py);
-  Serial.println(F("Starting motor movement in Y direction"));
+  if (debug_print == true) Serial.print(F("The distance in Y from start to finish is: "));
+  if (debug_print == true) Serial.println(dis_py);
+  if (debug_print == true) Serial.println(F("Starting motor movement in Y direction"));
   //fix the return to center here
   if (dis_py > 0){
     Y_CCW_Stepper_P(pmY);
@@ -814,7 +820,7 @@ void move_to_p(int pmX, int pmY){
     Y_CW_Stepper_P(pmY);
     //From_Gridline_R();
   }
-  Serial.println(F("Moving back to the center of the tile"));
+  if (debug_print == true) Serial.println(F("Moving back to the center of the tile"));
   if(mag_x < pmX){
     From_Gridline_R();
   }else if(mag_x > pmX){
@@ -835,22 +841,23 @@ void X_CW_Stepper_P(int DX){
   }
   */
   int DL = DX - 50;
-  //Serial.println(F("The gridline distance is: "));
-  //Serial.print(DL);
-  Serial.println(F("X stepper toggle clockwise"));
+  //if (debug_print == true) Serial.println(F("The gridline distance is: "));
+  //if (debug_print == true) Serial.print(DL);
+  if (debug_print == true) Serial.println(F("X stepper toggle clockwise"));
   digitalWrite(5, HIGH);
   while (mag_x != DL){
     digitalWrite(4, HIGH);
     delay(20);
     digitalWrite(4, LOW);
-    Serial.println(mag_x);
+    if (debug_print == true) Serial.println(mag_x);
     mag_x = mag_x + 10;
+    Serial.print(F("R"));
     //send pulse to christian, write via serial ===> Serial.write("X or Y" 0 or 1) to every motion funtion
     //Serial.write(mag_x);
     delay(50);
   }
-  Serial.println(mag_x);
-  Serial.println(F("arrived at desired X location"));
+  if (debug_print == true) Serial.println(mag_x);
+  if (debug_print == true) Serial.println(F("arrived at desired X location"));
 }
 //==========================================================
 
@@ -866,21 +873,22 @@ void X_CCW_Stepper_P(int DX){
   }
   */
   int DL = DX + 50;
-  //Serial.println(F("The gridline distance is: "));
-  //Serial.print(DL);
-  Serial.println(F("X stepper toggle counter clockwise"));
+  //if (debug_print == true) Serial.println(F("The gridline distance is: "));
+  //if (debug_print == true) Serial.print(DL);
+  if (debug_print == true) Serial.println(F("X stepper toggle counter clockwise"));
   digitalWrite(5, LOW);
   while (mag_x != DL ) {
     digitalWrite(4, HIGH);
     delay(20);
     digitalWrite(4, LOW);
-    Serial.println(mag_x);
+    if (debug_print == true) Serial.println(mag_x);
     mag_x = mag_x - 10;
+    Serial.print(F("L"));
     //Serial.write(mag_x);
     delay(50);
   }
-  Serial.println(mag_x);
-  Serial.println(F("arrived at desired X location"));
+  if (debug_print == true) Serial.println(mag_x);
+  if (debug_print == true) Serial.println(F("arrived at desired X location"));
 }
 //==============================================
 
@@ -895,19 +903,20 @@ void Y_CW_Stepper_P(int DY){
     delay(200);
   }
   */
-  Serial.println(F("Y stepper toggle clockwise"));
+  if (debug_print == true) Serial.println(F("Y stepper toggle clockwise"));
   digitalWrite(3, HIGH);
   while (mag_y != DY) {
     digitalWrite(2, HIGH);
     delay(20);
     digitalWrite(2, LOW);
-    Serial.println(mag_y);
+    if (debug_print == true) Serial.println(mag_y);
     mag_y = mag_y - 10;
+    Serial.print(F("U"));
     //Serial.write(mag_y);
     delay(50);
   }
-  Serial.println(mag_y);
-  Serial.println(F("arrived at desired Y location"));
+  if (debug_print == true) Serial.println(mag_y);
+  if (debug_print == true) Serial.println(F("arrived at desired Y location"));
 }
 //==============================================
 
@@ -922,19 +931,20 @@ void Y_CCW_Stepper_P(int DY){
     delay(200);
     }
   */
-  Serial.println(F("Y stepper toggle counter clockwise"));
+  if (debug_print == true) Serial.println(F("Y stepper toggle counter clockwise"));
   digitalWrite(3, LOW);
   while (mag_y != DY) {
     digitalWrite(2, HIGH);
     delay(20);
     digitalWrite(2, LOW);
-    Serial.println(mag_y);
+    if (debug_print == true) Serial.println(mag_y);
     mag_y = mag_y + 10;
+    Serial.print(F("D"));
     //Serial.write(mag_y);
     delay(50);
     }
-    Serial.println(mag_y);
-    Serial.println(F("arrived at desired Y location"));
+    if (debug_print == true) Serial.println(mag_y);
+    if (debug_print == true) Serial.println(F("arrived at desired Y location"));
 }
 //==========================================================
 
@@ -949,19 +959,20 @@ void X_CW_Stepper(int DX){
     delay(200);
   }
   */
-  Serial.println(F("X stepper toggle clockwise"));
+  if (debug_print == true) Serial.println(F("X stepper toggle clockwise"));
   digitalWrite(5, HIGH);
   while (mag_x != DX){
     digitalWrite(4, HIGH);
     delay(20);
     digitalWrite(4, LOW);
-    Serial.println(mag_x);
+    if (debug_print == true) Serial.println(mag_x);
     mag_x = mag_x + 10;
+    Serial.print(F("R"));
     //Serial.write(mag_x);
     delay(50);
   }
-  Serial.println(mag_x);
-  Serial.println(F("arrived at desired X location"));
+  if (debug_print == true) Serial.println(mag_x);
+  if (debug_print == true) Serial.println(F("arrived at desired X location"));
 }
 //==========================================================
 
@@ -976,19 +987,20 @@ void X_CCW_Stepper(int DX){
     delay(200);
   }
   */
-  Serial.println(F("X stepper toggle counter clockwise"));
+  if (debug_print == true) Serial.println(F("X stepper toggle counter clockwise"));
   digitalWrite(5, LOW);
   while (mag_x != DX ) {
     digitalWrite(4, HIGH);
     delay(20);
     digitalWrite(4, LOW);
-    Serial.println(mag_x);
+    if (debug_print == true) Serial.println(mag_x);
     mag_x = mag_x - 10;
+    Serial.print(F("L"));
     //Serial.write(mag_x);
     delay(50);
   }
-  Serial.println(mag_x);
-  Serial.println(F("arrived at desired X location"));
+  if (debug_print == true) Serial.println(mag_x);
+  if (debug_print == true) Serial.println(F("arrived at desired X location"));
 }
 //==============================================
 
@@ -1003,19 +1015,20 @@ void Y_CW_Stepper(int DY){
     delay(200);
   }
   */
-  Serial.println(F("Y stepper toggle clockwise"));
+  if (debug_print == true) Serial.println(F("Y stepper toggle clockwise"));
   digitalWrite(3, HIGH);
   while (mag_y != DY) {
     digitalWrite(2, HIGH);
     delay(20);
     digitalWrite(2, LOW);
-    Serial.println(mag_y);
+    if (debug_print == true) Serial.println(mag_y);
     mag_y = mag_y - 10;
+    Serial.print(F("U"));
     //Serial.write(mag_y);
     delay(50);
   }
-  Serial.println(mag_y);
-  Serial.println(F("arrived at desired Y location"));
+  if (debug_print == true) Serial.println(mag_y);
+  if (debug_print == true) Serial.println(F("arrived at desired Y location"));
 }
 //==============================================
 
@@ -1030,51 +1043,54 @@ void Y_CCW_Stepper(int DY){
     delay(200);
     }
   */
-  Serial.println(F("Y stepper toggle counter clockwise"));
+  if (debug_print == true) Serial.println(F("Y stepper toggle counter clockwise"));
   digitalWrite(3, LOW);
   while (mag_y != DY) {
     digitalWrite(2, HIGH);
     delay(20);
     digitalWrite(2, LOW);
-    Serial.println(mag_y);
+    if (debug_print == true) Serial.println(mag_y);
     mag_y = mag_y + 10;
+    Serial.print(F("D"));
     //Serial.write(mag_y);
     delay(50);
     }
-    Serial.println(mag_y);
-    Serial.println(F("arrived at desired Y location"));
+    if (debug_print == true) Serial.println(mag_y);
+    if (debug_print == true) Serial.println(F("arrived at desired Y location"));
 }
 //==============================================
 
 void To_Gridline(){
   int h = 0;
-  Serial.println(F("Moving to gridline"));
+  if (debug_print == true) Serial.println(F("Moving to gridline"));
   if (a_S < 4){
     digitalWrite(3, LOW);
     while (h < 50) {
       digitalWrite(2, HIGH);
       delay(20);
       digitalWrite(2, LOW);
-      Serial.println(mag_y);
+      if (debug_print == true) Serial.println(mag_y);
       h = h + 5;
       mag_y = mag_y + 5;
+      Serial.print(F("d"));
       //Serial.write(mag_y);
       delay(50);
     }
-    Serial.println(mag_y);
+    if (debug_print == true) Serial.println(mag_y);
   }else if(a_S > 4){
     digitalWrite(3, HIGH);
     while (h < 50) {
       digitalWrite(2, HIGH);
       delay(20);
       digitalWrite(2, LOW);
-      Serial.println(mag_y);
+      if (debug_print == true) Serial.println(mag_y);
       h = h + 5;
       mag_y = mag_y - 5;
+      Serial.print(F("u"));
       //Serial.write(mag_y);
       delay(50);
     }
-    Serial.println(mag_y);
+    if (debug_print == true) Serial.println(mag_y);
   }
 }
 //==============================================
@@ -1087,12 +1103,13 @@ void From_Gridline_R(){
     delay(20);
     digitalWrite(4, LOW);
     g = g + 5;
-    Serial.println(mag_x);
+    if (debug_print == true) Serial.println(mag_x);
     mag_x = mag_x + 5;
+    Serial.print(F("r"));
     //Serial.write(mag_x);
     delay(50);
   }
-  Serial.println(mag_x);
+  if (debug_print == true) Serial.println(mag_x);
 }
 //==============================================
 
@@ -1104,23 +1121,26 @@ void From_Gridline_L(){
     delay(20);
     digitalWrite(4, LOW);
     g = g + 5;
-    Serial.println(mag_x);
+    if (debug_print == true) Serial.println(mag_x);
     mag_x = mag_x - 5;
+    Serial.print(F("l"));
     //Serial.write(mag_x);
     delay(50);
   }
-  Serial.println(mag_x);
+  if (debug_print == true) Serial.println(mag_x);
 }
 //==============================================
 
 void engage_mag(){
   Mag_Servo.write(0);
-  delay(1000);
-  //Serial.write("ENGAGE"));
+  delay(500);
+  Serial.print(F("E"));
+  delay(20);
 }
 
 void disengage_mag(){
   Mag_Servo.write(93.5);
-  delay(1000);
-  //Serial.write("DETACH"));
+  delay(500);
+  Serial.print(F("S"));
+  delay(20);
 }
