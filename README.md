@@ -1,2 +1,2 @@
 # RobotChess
-Junior design project at SUNY Polytechnic institute. 
+Junior design project at SUNY Polytechnic institute
