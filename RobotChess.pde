@@ -115,7 +115,7 @@ void setup() {
   //readFen(cur_fen);
   //drawPieces();
   
-  //uCPUinit(0); //use the 2nd COM port
+  uCPUinit(0); //use the 2nd COM port
 }
 
 void draw() {  
@@ -686,4 +686,5 @@ void newGame() {
     player_time = 900;
     computer_time = 900;
     movesHistory = " moves ";
+    evalString = "e2e4";
 }

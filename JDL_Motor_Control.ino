@@ -108,7 +108,7 @@ void setup() {
   pinMode(limit_X, INPUT_PULLUP);
   pinMode(limit_Y, INPUT_PULLUP);
 
-  Serial.begin(57600);
+  Serial.begin(4800);
   
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
@@ -856,7 +856,7 @@ void X_CW_Stepper_P(int DX){
     Serial.print(F("R"));
     //send pulse to christian, write via serial ===> Serial.write("X or Y" 0 or 1) to every motion funtion
     //Serial.write(mag_x);
-    delay(50);
+    delay(100);
   }
   if (debug_print == true) Serial.println(mag_x);
   if (debug_print == true) Serial.println(F("arrived at desired X location"));
@@ -887,7 +887,7 @@ void X_CCW_Stepper_P(int DX){
     mag_x = mag_x - 10;
     Serial.print(F("L"));
     //Serial.write(mag_x);
-    delay(50);
+    delay(100);
   }
   if (debug_print == true) Serial.println(mag_x);
   if (debug_print == true) Serial.println(F("arrived at desired X location"));
@@ -915,7 +915,7 @@ void Y_CW_Stepper_P(int DY){
     mag_y = mag_y - 10;
     Serial.print(F("U"));
     //Serial.write(mag_y);
-    delay(50);
+    delay(100);
   }
   if (debug_print == true) Serial.println(mag_y);
   if (debug_print == true) Serial.println(F("arrived at desired Y location"));
@@ -943,7 +943,7 @@ void Y_CCW_Stepper_P(int DY){
     mag_y = mag_y + 10;
     Serial.print(F("D"));
     //Serial.write(mag_y);
-    delay(50);
+    delay(100);
     }
     if (debug_print == true) Serial.println(mag_y);
     if (debug_print == true) Serial.println(F("arrived at desired Y location"));
@@ -971,7 +971,7 @@ void X_CW_Stepper(int DX){
     mag_x = mag_x + 10;
     Serial.print(F("R"));
     //Serial.write(mag_x);
-    delay(50);
+    delay(100);
   }
   if (debug_print == true) Serial.println(mag_x);
   if (debug_print == true) Serial.println(F("arrived at desired X location"));
@@ -999,7 +999,7 @@ void X_CCW_Stepper(int DX){
     mag_x = mag_x - 10;
     Serial.print(F("L"));
     //Serial.write(mag_x);
-    delay(50);
+    delay(100);
   }
   if (debug_print == true) Serial.println(mag_x);
   if (debug_print == true) Serial.println(F("arrived at desired X location"));
@@ -1027,7 +1027,7 @@ void Y_CW_Stepper(int DY){
     mag_y = mag_y - 10;
     Serial.print(F("U"));
     //Serial.write(mag_y);
-    delay(50);
+    delay(100);
   }
   if (debug_print == true) Serial.println(mag_y);
   if (debug_print == true) Serial.println(F("arrived at desired Y location"));
@@ -1055,7 +1055,7 @@ void Y_CCW_Stepper(int DY){
     mag_y = mag_y + 10;
     Serial.print(F("D"));
     //Serial.write(mag_y);
-    delay(50);
+    delay(100);
     }
     if (debug_print == true) Serial.println(mag_y);
     if (debug_print == true) Serial.println(F("arrived at desired Y location"));
@@ -1076,7 +1076,7 @@ void To_Gridline(){
       mag_y = mag_y + 5;
       if(h%10==0) Serial.print(F("d"));
       //Serial.write(mag_y);
-      delay(50);
+      delay(100);
     }
     if (debug_print == true) Serial.println(mag_y);
   }else if(a_S > 4){
@@ -1090,7 +1090,7 @@ void To_Gridline(){
       mag_y = mag_y - 5;
       if(h%10==0) Serial.print(F("u"));
       //Serial.write(mag_y);
-      delay(50);
+      delay(100);
     }
     if (debug_print == true) Serial.println(mag_y);
   }
@@ -1109,7 +1109,7 @@ void From_Gridline_R(){
     mag_x = mag_x + 5;
     if(g%10==0) Serial.print(F("r"));
     //Serial.write(mag_x);
-    delay(50);
+    delay(100);
   }
   if (debug_print == true) Serial.println(mag_x);
 }
@@ -1127,7 +1127,7 @@ void From_Gridline_L(){
     mag_x = mag_x - 5;
     if(g%10==0) Serial.print(F("l"));
     //Serial.write(mag_x);
-    delay(50);
+    delay(100);
   }
   if (debug_print == true) Serial.println(mag_x);
 }

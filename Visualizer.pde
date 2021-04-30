@@ -37,7 +37,7 @@ void setup() {
   for(int i = 0; i < 64; i++) BitBoard[i] = ' ';
   //========================================================================
   // SET COM PORT HERE
-  visPort = new Serial(this, Serial.list()[1], 57600);
+  visPort = new Serial(this, Serial.list()[1], 4800);
   size(1200,800);
   
   background(50,50,70);
@@ -66,7 +66,7 @@ void draw() {
    if (move_number == 7)  visPort.write("ywV:F<Z:wuf2246C");
    if (move_number == 8)  visPort.write("ywV:B<Z:wuf2246P");
    if (move_number == 9)  visPort.write("ywV:B<Z>wu^2200C");
-   if (move_number == 10) visPort.write("ywV:F<Z>wu^2200P");
+   if (move_number == 10) visPort.write("yvVJB<Z>wu^2200P");
    if (move_number == 11) visPort.write("yvV:F<Z>wuU2127C");
    if (move_number == 12) visPort.write("yvV:B<Z>wuS2127P");
   }
@@ -130,10 +130,10 @@ void drawBoard(){
   g_color = g_color_w;
   
   for(float i = 0; i<8; i++){
-      for(float j = 0; j<8; j++){
+      for(float j = 0; j<12; j++){
         fill(g_color);
         noStroke();
-        rect(j*gridSize+200,i*gridSize,gridSize,gridSize);
+        rect(j*gridSize,i*gridSize,gridSize,gridSize);
         fill(0);
         //text(num, g_x+20,g_y+20);
         //Change the color after each square
@@ -152,8 +152,14 @@ void drawBoard(){
             g_color = g_color_b;
           }
   }//outer for loop
+  
+  stroke(255,0,0);
+  fill(255, 0);
+  strokeWeight(7);
+  rect(0,0, 200, height);
+  rect(boardSize+200,0, 200, height);
+  noStroke();
 }// end "drawBoard"
-
 
 //Function to read a fen string and initialize required variables for legal move logic
 void readFen(String curFen){
