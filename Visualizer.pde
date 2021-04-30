@@ -57,14 +57,18 @@ void draw() {
    delay(1000);
    is_moving = true;
    move_number++;
-   if (move_number == 1) visPort.write("yyv:::Z:wyv2457C");
-   if (move_number == 2) visPort.write("ywv:B:Z:wyv2457P");
-   if (move_number == 3) visPort.write("ywv:B<Z:wyf2352C");
-   if (move_number == 4) visPort.write("ywVBB<Z:wyf2352P");
-   if (move_number == 5) visPort.write("ywVBB<Z>wy^2251C");
-   if (move_number == 6) visPort.write("yWVFB<Z>wy^2251P");
-   if (move_number == 7) visPort.write("yWVFB<Z>wyU2147C");
-   if (move_number == 8) visPort.write("yWVBB<Z>wyS2147P");
+   if (move_number == 1)  visPort.write("yyv:::Z:wyv2458C");
+   if (move_number == 2)  visPort.write("ywv:B:Z:wyv2458P");
+   if (move_number == 3)  visPort.write("ywv:B:ZZwuv2421C");
+   if (move_number == 4)  visPort.write("ywVBB:ZZwuv2421P");
+   if (move_number == 5)  visPort.write("ywVBF:Z:wuv2339C");
+   if (move_number == 6)  visPort.write("ywV:F:Z:wuv2339P");
+   if (move_number == 7)  visPort.write("ywV:F<Z:wuf2246C");
+   if (move_number == 8)  visPort.write("ywV:B<Z:wuf2246P");
+   if (move_number == 9)  visPort.write("ywV:B<Z>wu^2200C");
+   if (move_number == 10) visPort.write("ywV:F<Z>wu^2200P");
+   if (move_number == 11) visPort.write("yvV:F<Z>wuU2127C");
+   if (move_number == 12) visPort.write("yvV:B<Z>wuS2127P");
   }
   
   background(0);

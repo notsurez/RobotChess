@@ -464,6 +464,8 @@ void Reset_stepper(){
 //=========================================================
 
 void Initial_Handling(byte startPass, byte finishPass){ //byte start, byte finish){
+  delay(500);
+  
   start = startPass;
   finish = finishPass;
   
@@ -803,7 +805,7 @@ void move_to_p(int pmX, int pmY){
   }else if(dis_px == 0){
     if(mag_x < 600){
       From_Gridline_R();
-    }else if(mag_x > 600);{
+    }else if(mag_x > 600){
       From_Gridline_L();
     }
   }
@@ -1072,7 +1074,7 @@ void To_Gridline(){
       if (debug_print == true) Serial.println(mag_y);
       h = h + 5;
       mag_y = mag_y + 5;
-      Serial.print(F("d"));
+      if(h%10==0) Serial.print(F("d"));
       //Serial.write(mag_y);
       delay(50);
     }
@@ -1086,7 +1088,7 @@ void To_Gridline(){
       if (debug_print == true) Serial.println(mag_y);
       h = h + 5;
       mag_y = mag_y - 5;
-      Serial.print(F("u"));
+      if(h%10==0) Serial.print(F("u"));
       //Serial.write(mag_y);
       delay(50);
     }
@@ -1105,7 +1107,7 @@ void From_Gridline_R(){
     g = g + 5;
     if (debug_print == true) Serial.println(mag_x);
     mag_x = mag_x + 5;
-    Serial.print(F("r"));
+    if(g%10==0) Serial.print(F("r"));
     //Serial.write(mag_x);
     delay(50);
   }
@@ -1123,7 +1125,7 @@ void From_Gridline_L(){
     g = g + 5;
     if (debug_print == true) Serial.println(mag_x);
     mag_x = mag_x - 5;
-    Serial.print(F("l"));
+    if(g%10==0) Serial.print(F("l"));
     //Serial.write(mag_x);
     delay(50);
   }
@@ -1135,12 +1137,12 @@ void engage_mag(){
   Mag_Servo.write(0);
   delay(500);
   Serial.print(F("E"));
-  delay(20);
+  delay(100);
 }
 
 void disengage_mag(){
   Mag_Servo.write(93.5);
   delay(500);
   Serial.print(F("S"));
-  delay(20);
+  delay(100);
 }
