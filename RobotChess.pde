@@ -73,6 +73,9 @@ char promoted_pawn = 'Q';     //what will the promoted pawn become
 char promoted_cpu_pawn = 'p'; //what the cpu promoted its pawn to
 boolean promotionNotSelected = true;
 
+boolean queenside_cherry = true;
+boolean kingside_cherry  = true;
+
 void setup() { 
   for(int i = 0; i < 64; i++) BitBoard[i] = ' ';
   
@@ -403,6 +406,8 @@ void mousePressed() {
       if (board[i][j] != null && (board[i][j].pieceType == 'K' || board[i][j].pieceType == 'Q' || board[i][j].pieceType == 'R' || board[i][j].pieceType == 'N' || board[i][j].pieceType == 'B' || board[i][j].pieceType == 'P')) {
         if(board[i][j].MouseIsOver()) {
           board[i][j].selected = true;
+          board[i][j].fillArray();
+          board[i][j].fillArray();
         }    
       }
     }
@@ -656,10 +661,13 @@ void lossCard() {
 }
 
 void newGame() {
+    bbcIndex = 420;
     gg_countdown = 300;
     game_gg = false;
     forced_mate = false;
     cpuAnal = 0;
+    queenside_cherry = true;
+     kingside_cherry = true;
     for(int i = 0; i < 8; i++) {
      for(int j = 0; j < 8; j++) {
       board[i][j] = null; 
