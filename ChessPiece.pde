@@ -692,6 +692,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       break;
       
       case 'P': // White Pawn
+      if(To == From){
+        return true;
+      }
             if((m == -1)&&(y_2 > y_1)&&(southwest == false)){
          if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              southwest = true;
@@ -934,6 +937,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       break;
            
       case 'R': //White Rook
+            if(To == From){
+        return true;
+      }
       if((m == -1)&&(y_2 > y_1)&&(blockedsouthwest == false)){
          if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              blockedsouthwest = true;
@@ -1202,6 +1208,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       break;     
       
       case 'N': //White Knight
+            if(To == From){
+        return true;
+      }
       if((m == -1)&&(y_2 > y_1)&&(blockedsouthwest == false)){
          if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              blockedsouthwest = true;
@@ -1317,6 +1326,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       break;      
       
       case 'B': //White Bishop// 
+            if(To == From){
+        return true;
+      }
                   if((m == -1)&&(y_2 > y_1)&&(blockedsouthwest == false)){
          if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              blockedsouthwest = true;
@@ -1582,6 +1594,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       break;
       
       case 'Q': //White Queen
+            if(To == From){
+        return true;
+      }
             if((m == -1)&&(y_2 > y_1)&&(blockedsouthwest == false)){
          if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              blockedsouthwest = true;
@@ -1963,7 +1978,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       
       break;
       case 'K': //White King
-
+      if(To == From){
+        return true;
+      }
       if((m == -1)&&(y_2 > y_1)&&(southwest == false)){
          if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              southwest = true;
@@ -2022,7 +2039,8 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
 
                       
       if(whiteincheckrt == false&&whiteincheckdn == false&&whiteinchecklt == false&&whiteincheckup == false && whiteinchecknw==false && whiteincheckne==false && whiteinchecksw == false && whiteincheckse == false){
-                
+
+            
         if((To-From == -7||To-From == -9) && (BitBoard[To] == 'p')){ // Condition to test if the pawn is making a capture
         IsitLegal = true;
       }
@@ -2724,6 +2742,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       break;
       
       case 'P': // White Pawn
+            if(To == From){
+        return true;
+      }
       if((m == 1)&&(y_2 < y_1)&&(northwest == false)){
            if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              northwest = true;
@@ -2960,6 +2981,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       break;
            
       case 'R': //White Rook
+            if(To == From){
+        return true;
+      }
             if((m == 1)&&(y_2 < y_1)&&(blockednorthwest == false)){
            if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              blockednorthwest = true;
@@ -3216,6 +3240,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       break;     
       
       case 'N': //White Knight
+            if(To == From){
+        return true;
+      }
                   if((m == 1)&&(y_2 < y_1)&&(blockednorthwest == false)){
            if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              blockednorthwest = true;
@@ -3336,6 +3363,9 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       break;      
       
       case 'B': //White Bishop// 
+            if(To == From){
+        return true;
+      }
             if((m == 1)&&(y_2 < y_1)&&(blockednorthwest == false)){
            if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              blockednorthwest = true;
@@ -3614,6 +3644,9 @@ if((m == -1)&&(y_2 > y_1)){
       break;
       
       case 'Q': //White Queen
+            if(To == From){
+        return true;
+      }
                   if((m == 1)&&(y_2 < y_1)&&(blockednorthwest == false)){
            if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              blockednorthwest = true;
@@ -4013,6 +4046,9 @@ if((m == -1)&&(y_2 > y_1)){
       break;
       
       case 'K': //White King
+            if(To == From){
+        return true;
+      }
          if((m == 1)&&(y_2 < y_1)&&(northwest == false)){
            if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              northwest = true;
