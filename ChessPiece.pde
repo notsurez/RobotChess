@@ -31,6 +31,7 @@ class ChessPiece {
   boolean southwest = false, southeast = false, northeast = false , northwest = false, up = false, right = false, down = false, left = false;
   boolean whiteinchecksw = false, whiteincheckse = false, whiteinchecknw = false,whiteincheckne = false, whiteincheckup = false, whiteincheckrt = false,whiteincheckdn = false,whiteinchecklt = false, whiteincheckknight = false, whiteincheckpawn = false;
   boolean blackincheck = false;
+  boolean whiteincheckking = false;
   boolean incheck[] = new boolean[64];
   boolean kingcheck = false;
   boolean kingside_cherry = true, queenside_cherry = true;
@@ -304,6 +305,7 @@ void fillArray() {
       whiteincheckse = false;
       whiteincheckknight = false;
       whiteincheckpawn = false;
+      whiteincheckking = false;
                 if(legalMoves[i] == false){
             legalMoves[i] = false;
           }
@@ -333,7 +335,7 @@ if(k == 31){
     }
 
 
-if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteincheckup||whiteinchecklt||whiteincheckdn||whiteincheckrt||whiteincheckknight||whiteincheckpawn){
+if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteincheckup||whiteinchecklt||whiteincheckdn||whiteincheckrt||whiteincheckknight||whiteincheckpawn||whiteincheckking){
   legalMoves[i] = false;
 }
           }
@@ -382,6 +384,7 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       whiteincheckse = false;
       whiteincheckknight = false;
       whiteincheckpawn = false;
+      whiteincheckking = false;
       if(legalMoves[z] == false){
         legalMoves[z] = false;
       }
@@ -395,7 +398,7 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
 for(int k = 63; k > -1; k--){
   isLegal2(kingpos,k);
 }
-if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteincheckup||whiteinchecklt||whiteincheckdn||whiteincheckrt||whiteincheckknight||whiteincheckpawn){
+if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteincheckup||whiteinchecklt||whiteincheckdn||whiteincheckrt||whiteincheckknight||whiteincheckpawn||whiteincheckking){
   legalMoves[z] = false;
   }
   }
@@ -1988,7 +1991,7 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
 
      if((x_2 == x_1&&(y_2 > y_1)&&(To != From)&&down == false)){
                 if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'b'||BitBoard[To] == 'k'){
-             down= true;
+             down = true;
            }
         if((BitBoard[To] == 'r'||BitBoard[To] == 'q')){
          whiteincheckdn = true;
@@ -2025,15 +2028,15 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       }
             if(d == 1||d == sqrt(2)){
         IsitLegal = true;
-              if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
+              if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'k'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
         return false;
       }
       }
               if((To-From == -7||To-From == -9)){ // Condition to test if the pawn is making a capture
-       if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){
+       if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'k'){
          return false;
        }
-       if(BitBoard[To] == 'r'||BitBoard[To] == 'n'||BitBoard[To] == 'b'||BitBoard[To] == 'q'||BitBoard[To] == 'k'||BitBoard[To] == 'p'){
+       if(BitBoard[To] == 'r'||BitBoard[To] == 'n'||BitBoard[To] == 'b'||BitBoard[To] == 'q'||BitBoard[To] == 'p'){
          IsitLegal = true;
       }
               }
@@ -4027,7 +4030,7 @@ if((m == -1)&&(y_2 > y_1)){
                }
                
            if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
-             blockednortheast = true;
+             northeast = true;
              println("This piece triggered the cherry");
              println((char)BitBoard[To]);
            }
@@ -4062,6 +4065,11 @@ if((m == -1)&&(y_2 > y_1)){
         whiteincheckknight = true;
       }
      }
+     if(d == 1||d == sqrt(2)){
+       if(BitBoard[To] == 'k'){
+         whiteincheckking = true;
+       }
+     }
 
            if(whiteincheckrt == false&&whiteincheckdn == false&&whiteinchecklt == false&&whiteincheckup == false && whiteinchecknw==false && whiteincheckne==false && whiteinchecksw == false && whiteincheckse == false){
                 
@@ -4070,15 +4078,15 @@ if((m == -1)&&(y_2 > y_1)){
       }
             if(d == 1||d == sqrt(2)){
         IsitLegal = true;
-              if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
+              if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'k'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
         return false;
       }
       }
               if((To-From == -7||To-From == -9)){ // Condition to test if the pawn is making a capture
-       if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){
+       if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'k'){
          return false;
        }
-       if(BitBoard[To] == 'r'||BitBoard[To] == 'n'||BitBoard[To] == 'b'||BitBoard[To] == 'q'||BitBoard[To] == 'k'||BitBoard[To] == 'p'){
+       if(BitBoard[To] == 'r'||BitBoard[To] == 'n'||BitBoard[To] == 'b'||BitBoard[To] == 'q'||BitBoard[To] == 'p'){
          IsitLegal = true;
       }
               }
@@ -4088,6 +4096,9 @@ if((m == -1)&&(y_2 > y_1)){
       } 
             if(To == 58 && queenside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ' && BitBoard[59] == ' ') IsitLegal = true;
       if(To == 62 &&  kingside_cherry == true && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
+      }
+      if(whiteincheckking == true){
+        return false;
       }
       if(whiteincheckrt == true){
                 if(To-From == 1){
