@@ -30,8 +30,10 @@ int boardSize = 800;
 float gridSize = boardSize/8;
 int pieceSize = (int)gridSize;
 
-int pressed_x = 0;
-int pressed_y = 0;
+int pressed_x  = 0;
+int pressed_y  = 0;
+int pressed_x2 = 0;
+int pressed_y2 = 0;
 int the_x = 0;
 int the_y = 0;
 
@@ -238,6 +240,8 @@ void drawPieces() {
         board[i][j].display();//piece
         board[i][j].MouseIsOver();
         board[i][j].move();
+        pressed_x2 = mouseX;
+        pressed_y2 = mouseY;
         board[i][j].highlightLegal();
       }
     }
@@ -435,6 +439,7 @@ void mousePressed() {
   black.active = false;
   random.active = false;
   cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+  evalString = "e2e4";
  }
  if(black.MouseIsOver()  && game_state == 1) {
   which_side = 'b';
@@ -442,6 +447,7 @@ void mousePressed() {
   black.active = true;
   random.active = false;
   cur_fen = blk_fen;
+  evalString = "e7e5";
  }
  if(random.MouseIsOver()  && game_state == 1) {
   white.active = false; 
@@ -451,9 +457,11 @@ void mousePressed() {
       if(pick == 1) {
         which_side = 'b';
         cur_fen = blk_fen;
+        evalString = "e7e5";
       }else{
         which_side = 'w';
         cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        evalString = "e2e4";
       }
     
  }
@@ -515,7 +523,7 @@ void mouseReleased() {
 //    for (int j = 0; j < 8; j++) { 
   int i = (the_new_x)/100;
   int j = (the_new_y)/100;
-  
+
   if (i > 7 || j > 7) println("Overflow error!"); //this should never happen
     if (i < 8 && j < 8) {
       //do not allow moving enemy pieces
@@ -696,5 +704,6 @@ void newGame() {
     player_time = 900;
     computer_time = 900;
     movesHistory = " moves ";
-    evalString = "e2e4";
+    evalString = "e7e5";
+    if (which_side == 'w') evalString = "e2e4";
 }

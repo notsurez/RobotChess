@@ -52,8 +52,7 @@ class Engine {
     }else {
        println("sucessfully initialized output/input streams"); 
     }
-    
-    
+     
   }
   
   /*
@@ -121,9 +120,24 @@ String listen() {
       println(inputStr);
       String moveString = "";
       
-      if ( inputStr.contains("ponder")) {
+      if (inputStr.contains("ponder")) {
         evalString = inputStr.substring(inputStr.indexOf("ponder") + 7);
-        print("evalString: ");
+        if (which_side == 'b') {
+         //invert the eval string 
+         byte eval1 = (byte) evalString.charAt(0);
+         byte eval2 = (byte) evalString.charAt(1);
+         byte eval3 = (byte) evalString.charAt(2);
+         byte eval4 = (byte) evalString.charAt(3);
+
+         eval1 = (byte) (104 - eval1 + 97);
+         eval3 = (byte) (104 - eval3 + 97);
+         eval2 = (byte) (56  - eval2 + 49);
+         eval4 = (byte) (56  - eval4 + 49);
+         
+         evalString = str((char) eval1) + str((char) eval2) + str((char) eval3) + str((char) eval4);
+        }
+
+        print("evalString = ");
         println(evalString);
         moveString = inputStr.substring(10, inputStr.indexOf("ponder")-1);
       }
@@ -185,9 +199,7 @@ String listen() {
           castling_occured = true;
           castling_side = false;
         }
-        
-        
-        
+
         print("Emulated serial communication  --> ");
         println(str(toBase64(BitBoard, castling_occured, castling_side, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
         //the turn indicated is correct

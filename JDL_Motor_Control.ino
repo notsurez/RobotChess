@@ -803,7 +803,7 @@ void move_to_p(int pmX, int pmY){
   }else if(dis_px < 0){
     X_CCW_Stepper_P(pmX);
   }else if(dis_px == 0){
-    if(mag_x < 600){
+    if(mag_x <= 600){
       From_Gridline_R();
     }else if(mag_x > 600){
       From_Gridline_L();
@@ -1065,7 +1065,7 @@ void Y_CCW_Stepper(int DY){
 void To_Gridline(){
   int h = 0;
   if (debug_print == true) Serial.println(F("Moving to gridline"));
-  if (a_S < 4){
+  if (a_S <= 4){
     digitalWrite(3, LOW);
     while (h < 50) {
       digitalWrite(2, HIGH);
