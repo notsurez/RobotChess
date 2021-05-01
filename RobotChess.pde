@@ -59,6 +59,7 @@ String blk_fen = "rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 byte BitBoard[] = new byte[64];
 byte TempBoard[] = new byte[64];
+boolean shesLegal[] = new boolean[64];
 
 char turnState = 'P'; //P for white/player, p for black/computer
 
@@ -237,7 +238,6 @@ void drawPieces() {
         board[i][j].display();//piece
         board[i][j].MouseIsOver();
         board[i][j].move();
-        board[i][j].fillArray();
         board[i][j].highlightLegal();
       }
     }
@@ -415,6 +415,8 @@ void mousePressed() {
           board[i][j].selected = true;
           board[i][j].fillArray();
           board[i][j].fillArray();
+          board[i][j].kingincheck();
+          board[i][j].testcheck();
         }    
       }
     }
@@ -517,9 +519,11 @@ void mouseReleased() {
   if (i > 7 || j > 7) println("Overflow error!"); //this should never happen
     if (i < 8 && j < 8) {
       //do not allow moving enemy pieces
+      
       if (board[i][j] != null && (board[i][j].pieceType == 'K' || board[i][j].pieceType == 'Q' || board[i][j].pieceType == 'R' || board[i][j].pieceType == 'N' || board[i][j].pieceType == 'B' || board[i][j].pieceType == 'P')) {
         if(board[i][j].MouseIsOver() && mouseX < boardSize && mouseY < boardSize) {
-          board[i][j].selected = false;
+          if (shesLegal[8*(mouseY/100)+(mouseX/100)] == true) {
+            board[i][j].selected = false;
           board[i][j].x = int(mouseX/gridSize)*(gridSize)+gridSize/2;
           board[i][j].y = int(mouseY/gridSize)*(gridSize)+gridSize/2;
           //board[i][j].updateBB();
@@ -527,7 +531,13 @@ void mouseReleased() {
           newPiece = (char) BitBoard[i+(8*j)]; 
           bbcIndex = board[i][j].bbIndex;
         }
+        if (shesLegal[8*(mouseY/100)+(mouseX/100)] == false) {
+          board[i][j].selected = false;
+          board[i][j].x = 50 + 100*i;
+          board[i][j].y = 50 + 100*j;
+        }
       }
+    }
     }
 //    }
 //  }
