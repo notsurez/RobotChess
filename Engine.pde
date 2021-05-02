@@ -158,22 +158,22 @@ String listen() {
       }
       if (moveString.length() == 4 && !moveString.contains("(non")) { //move the piece
         int fromChar = (int) moveString.charAt(0) - 97;
-        int  fromInt  = (int) moveString.charAt(1) - 48;
+        int fromInt  = (int) moveString.charAt(1) - 48;
         int toChar   = (int) moveString.charAt(2) - 97;
-        int  toInt    = (int) moveString.charAt(3) - 48;
-        print(fromChar);
-        print(" ");
-        print(fromInt);
-        print(" ");
-        print(toChar);
-        print(" ");
-        print(toInt);
-        println(" ");
+        int toInt    = (int) moveString.charAt(3) - 48;
+        //print(fromChar);
+        //print(" ");
+        //print(fromInt);
+        //print(" ");
+        //print(toChar);
+        //print(" ");
+        //print(toInt);
+        //println(" ");
         int fromPos = fromChar + (8 - fromInt)*8;
         int toPos   = toChar   + (8 - toInt)*8;
-        print(fromPos);
-        print("-->");
-        println(toPos);
+        //print(fromPos);
+        //print("-->");
+        //println(toPos);
         
         if (BitBoard[fromPos] == 'K' && toPos-fromPos ==  2) { //kingside  castle white
           BitBoard[61] = 'R';
@@ -200,8 +200,8 @@ String listen() {
           castling_side = false;
         }
 
-        print("Emulated serial communication  --> ");
-        println(str(toBase64(BitBoard, castling_occured, castling_side, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
+        //print("Emulated serial communication  --> ");
+        //println(str(toBase64(BitBoard, castling_occured, castling_side, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
         //the turn indicated is correct
         byte oldPiece = BitBoard[fromPos];
         
@@ -218,6 +218,14 @@ String listen() {
     if (fromPos != toPos && promoted_cherry == false) movesHistory = movesHistory + bbCoordString(fromPos) + bbCoordString(toPos) + " ";
     if (fromPos != toPos && promoted_cherry == true)  movesHistory = movesHistory + bbCoordString(fromPos) + bbCoordString(toPos) + promoted_cpu_pawn + " ";
     promoted_cherry = false;
+    
+    if (board_connected == true) {
+      println("sending black move to uCPU: " + bbCoordString(fromPos) + bbCoordString(toPos) + str(((player_time / 60)*100) + (player_time % 60) + 1000) + turnState);
+      microPC.write(bbCoordString(fromPos));
+      microPC.write(bbCoordString(toPos));
+      microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
+      microPC.write(turnState);
+    }
     
   if (oldPiece == 'p' && toPos > 55) {
    println("promoting the pawn");

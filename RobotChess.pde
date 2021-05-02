@@ -74,6 +74,7 @@ boolean castling_side = false;      //false = queenside, true = kingside
 
 char promoted_pawn = 'Q';     //what will the promoted pawn become
 char promoted_cpu_pawn = 'p'; //what the cpu promoted its pawn to
+boolean promoted_player_cherry = false;
 boolean promotionNotSelected = true;
 
 boolean queenside_cherry = true;
@@ -287,7 +288,11 @@ void updatePieces() {
           castling_side = false;
         }
   
-  if (BitBoard[bbcIndex] == 'P' && TobbIndex < 8) newPiece = promoted_pawn;
+  if (BitBoard[bbcIndex] == 'P' && TobbIndex < 8) { 
+    newPiece = promoted_pawn;
+    promoted_player_cherry = true;
+  }
+  
   if(TobbIndex != ' ') {
     BitBoard[TobbIndex] = ' ';
   }
@@ -318,8 +323,8 @@ void updatePieces() {
   
   println(movesHistory);
   
-  print("Emulated serial communications --> ");
-  println(str(toBase64(BitBoard, castling_occured, castling_side, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
+  //print("Emulated serial communications --> ");
+  //println(str(toBase64(BitBoard, castling_occured, castling_side, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
   
   for(int i = 0; i<64; i++) {
       board[i%8][floor(i/8)] = null;

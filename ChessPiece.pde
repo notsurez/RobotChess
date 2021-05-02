@@ -155,7 +155,7 @@ void updateBB() {
 
     BitBoard[bbIndex] = ' '; //Clear where the piece moved FROM
 
-    println(BitBoard[bbIndex]); // Print which 
+    //println(BitBoard[bbIndex]); //Print which 
 
     if(BitBoard[TobbIndex] != 32 && BitBoard[TobbIndex] != 0) { //if the TO position contains a piece
       BitBoard[TobbIndex] = ' '; 
@@ -320,25 +320,17 @@ void fillArray() {
             BitBoard[bbIndex] = ' ';
 for(int k = 0; k < 64; k++){
   isLegal1(i,k);
-  if(k == 31){
-    println((char)BitBoard[31]);
-  println(m);
-}
 }
 
 for(int k = 63; k > -1; k--){
   isLegal2(i,k);
-if(k == 31){
-  println((char)BitBoard[31]);
-  println(m);
 }
-}
-          for(int z = 0; z < 64; z++) {
-     print((char)BitBoard[z]);
-     if(z == 7 || z == 15 || z == 23 || z == 31 || z == 39 || z == 47 || z == 55) {
-       println();
-     }
-    }
+//          for(int z = 0; z < 64; z++) {
+//     print((char)BitBoard[z]);
+//     if(z == 7 || z == 15 || z == 23 || z == 31 || z == 39 || z == 47 || z == 55) {
+//       println();
+//     }
+//    }
 
 if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteincheckup||whiteinchecklt||whiteincheckdn||whiteincheckrt||whiteincheckknight||whiteincheckpawn||whiteincheckking){
   legalMoves[i] = false;
@@ -1359,7 +1351,7 @@ boolean isLegal1(int From, int To){
       }
       if((m == -1)&&(y_2 < y_1)&&(northeast == false)){
                if(BitBoard[To] == 'b'||BitBoard[To] == 'q'){
-         println("this has been reached");
+         //println("this has been reached");
       northeast = true;
       whiteincheckne = true;
                }
@@ -1771,7 +1763,17 @@ void addMove(int fromLocation, int toLocation, boolean tellStockfish) {
   if (fromLocation == 56 || fromLocation == 60) queenside_cherry = false;
   if (fromLocation == 63 || fromLocation == 60) kingside_cherry = false;
 
-  movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + " ";
+  if (promoted_player_cherry == false) movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + " ";
+  if (promoted_player_cherry == true)  movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + (char)(promoted_pawn ^ 0x20) + " ";
+  promoted_player_cherry = false;
+  
+  if (board_connected == true) {
+    println("sending white move to uCPU: " + bbCoordString(fromLocation) + bbCoordString(toLocation) + str(((player_time / 60)*100) + (player_time % 60) + 1000) + turnState);
+    microPC.write(bbCoordString(fromLocation));
+    microPC.write(bbCoordString(toLocation));
+    microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
+    microPC.write(turnState);
+  }
   
   if (tellStockfish) {
   stockfish.say("position fen " + cur_fen + movesHistory);

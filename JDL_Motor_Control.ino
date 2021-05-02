@@ -21,7 +21,7 @@ int cap_Y = 0;
 byte start = 56;
 byte finish = 7;
 
-boolean debug_print = false;
+boolean debug_print = false; //set to false for motor movement, set to true for serial debug
 
 //Pin connected to ST_CP of 74HC595
 #define latchPin A1
@@ -58,9 +58,10 @@ char bitBoard[66];
 char oldbitBoard[66];
 
 char gameBoardState[96];
+char oldgameBoardState[96];
+
 char discardPile[16];
 byte number_discarded = 0;
-byte discard_cherry = 0;
 
 const char default_gameBoardState[96] = {C_ROOK, C_HORSE, C_BISHOP, C_QUEEN, C_KING, C_BISHOP, C_HORSE, C_ROOK,
                     C_PAWN, C_PAWN, C_PAWN, C_PAWN, C_PAWN, C_PAWN, C_PAWN, C_PAWN,  
@@ -98,6 +99,7 @@ unsigned long lastMillis = 0;
 unsigned int  serialTimeout = 0;
 
 byte skip_castling = 0;
+boolean skip_flag = false;
 
 char rgbLedColor = '7';
 //0 - off, 1 - red, 2 - green, 3 - blue, 4 - yellow, 5 - purple, 6 - turquoise, 7 - white
@@ -166,6 +168,7 @@ void setup() {
   oldbitBoard[65] = 0;
 
 memcpy(gameBoardState, default_gameBoardState, 96);
+memcpy(oldgameBoardState, default_gameBoardState, 96);
 memcpy(discardPile, default_discardPile, 16);
 
   digitalWrite(motorDriver_Reset, HIGH);
@@ -174,7 +177,7 @@ memcpy(discardPile, default_discardPile, 16);
 void loop() {
   // put your main code here, to run repeatedly:
 serialTimeout = 0;
-  while ((Serial.available() > 1) && (Serial.available() != 16) && (serialTimeout < 1000)) {
+  while ((Serial.available() > 1) && (Serial.available() != 9) && (serialTimeout < 1000)) {
     delay(1);
     serialTimeout++;
     if (serialTimeout > 750) {
@@ -184,21 +187,38 @@ serialTimeout = 0;
     serialTimeout = 10000;
     }
   }
-  if (Serial.available() > 15) {
+  if (Serial.available() > 8) {
     //process incoming data
- //11 bytes - led board state in base64
+ //4 bytes - led board state in base64
  //4 bytes - player timer
  //1 byte  - who's turn is it
 
-    for (byte a = 0; a < 11; a++)     serialBase64input[a] = Serial.read();
-    for (byte b = 0; b < 4;  b++)     serialPlayerinput[b] = Serial.read();
+    for (byte a = 0; a < 4; a++)      serialBase64input[a] = Serial.read();
+    for (byte b = 0; b < 4; b++)      serialPlayerinput[b] = Serial.read();
     rgbLedColor = Serial.read();
-
-    for (byte d = 0; d < 11; d++) {
-      //decode base64
-      byte dataIn = serialBase64input[d] - 58;
-      for (byte n = 0; n < 6; n++) bitBoard[(d*6)+(5-n)] = ((dataIn >> n) & 0x01);
+      skip_flag = false;
+    if (serialBase64input[0] == 'x') {
+      skip_flag = true;
+      if (debug_print == true) Serial.println(F("skipping, no pieces were made"));
     }
+
+    //for (byte d = 0; d < 11; d++) {
+    //  //decode base64
+    //  byte dataIn = serialBase64input[d] - 58;
+    //  for (byte n = 0; n < 6; n++) bitBoard[(d*6)+(5-n)] = ((dataIn >> n) & 0x01);
+    //}
+    if (skip_flag == false) {
+        int fromChar = (int) serialBase64input[0] - 97;
+        int fromInt  = (int) serialBase64input[1] - 48;
+        int toChar   = (int) serialBase64input[2] - 97;
+        int toInti   = (int) serialBase64input[3] - 48;
+        int fromPos = fromChar + (8 - fromInt)*8;
+        int toPos   = toChar   + (8 - toInti)*8;
+
+        bitBoard[toPos] = true;
+        bitBoard[fromPos] = false;
+        gameBoardState[toPos] = gameBoardState[fromPos];
+        gameBoardState[fromPos] = EMPTY_TILE;
 
   debug_message();
       //compare the bitboards
@@ -264,8 +284,6 @@ Reserved locations:
         }
 
         if (to_location != 69) old_to_location = to_location;
-        
-        oldbitBoard[i] = bitBoard[i];
       }
 
 if (skip_castling == 0) {
@@ -300,7 +318,15 @@ if (skip_castling == 0) {
 
 skip_castling = 0;
 
-      if (debug_print == true) Serial.print(F("Decoding clock. "));
+      for (int i = 0; i < 64; i++) {
+        oldbitBoard[i] = bitBoard[i];
+      }
+      for (int i = 0; i < 96; i++) {
+        oldgameBoardState[i] = gameBoardState[i];
+      }
+    }
+    
+    if (debug_print == true) Serial.print(F("Decoding clock. "));
       //decode clock
       playerTimeRemaining = 1000 * (serialPlayerinput[0] - 48);
       playerTimeRemaining = playerTimeRemaining + (100 * (serialPlayerinput[1] - 48));
@@ -364,6 +390,7 @@ return ((p/10)*16) + (p%10);
 }
 
 void debug_message() {
+  if (debug_print == true) Serial.println(F("debug_message():"));
   for(int i = 0; i < 66; i++) {
     if (i%8 == 0) if (debug_print == true) Serial.println(F(" "));
     if (debug_print == true) Serial.print(bitBoard[i], HEX);
@@ -402,12 +429,6 @@ if ((from < 69) && (to < 69)) {
   if (debug_print == true) Serial.println(F("."));
   motorMovement(from, to);
 }
-  if (discard_cherry != 0 && false) {
-   char temp = discardPile[number_discarded - 1];
-   discardPile[number_discarded - 1] = gameBoardState[from]; 
-   gameBoardState[from] = temp;
-   discard_cherry = 0;
-  }
   
   if (debug_print == true) Serial.print(F("gameBoardState "));
     for(byte b = 0; b < 64; b++) {
@@ -436,11 +457,9 @@ void motorEliminate(byte tile_eliminated) {
   if (debug_print == true) Serial.print(F("debug: motorEliminate("));
   if (debug_print == true) Serial.print(tile_eliminated);
   if (debug_print == true) Serial.println(F(");"));
-  discardPile[number_discarded] = gameBoardState[tile_eliminated];
+  discardPile[number_discarded] = oldgameBoardState[tile_eliminated];
   number_discarded++;
-  gameBoardState[tile_eliminated] = EMPTY_TILE;
-  discard_cherry = 1;
-  Initial_Handling(tile_eliminated, 69);
+  if (debug_print == false) Initial_Handling(tile_eliminated, 69);
 }
 
 void motorMovement(byte tile_from, byte tile_to) {
@@ -450,9 +469,7 @@ void motorMovement(byte tile_from, byte tile_to) {
   if (debug_print == true) Serial.print(F(", "));
   if (debug_print == true) Serial.print(tile_to);
   if (debug_print == true) Serial.println(F(");"));
-  gameBoardState[tile_to] = gameBoardState[tile_from];
-  gameBoardState[tile_from] = EMPTY_TILE;
-  Initial_Handling(tile_from, tile_to);
+  if (debug_print == false) Initial_Handling(tile_from, tile_to);
 }
 
 //David's code begins here
