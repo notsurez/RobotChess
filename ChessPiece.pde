@@ -686,8 +686,8 @@ boolean isLegal1(int From, int To){
       if(To > 63 ||To < 0){ //Returns false if the king is moved off the board
         return false;
       } 
-      ///EDIT ALREADY MADE +_+++++++++++
-      if(which_side == 'w'){
+      //castling logic
+      if(which_side == 'w') {
         if(To == 58 && queenside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ' && BitBoard[59] == ' ') IsitLegal = true;
         if(To == 62 &&  kingside_cherry == true && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
       }else{
@@ -1364,8 +1364,13 @@ boolean isLegal1(int From, int To){
       if(To > 63 ||To < 0){ //Returns false if the king is moved off the board
         return false;
       } 
-      if(To == 61 && queenside_cherry == true && BitBoard[60] == ' ' && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
+      if(which_side == 'w') {
+        if(To == 58 && queenside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ' && BitBoard[59] == ' ') IsitLegal = true;
+        if(To == 62 &&  kingside_cherry == true && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
+      }else{
+        if(To == 61 && queenside_cherry == true && BitBoard[60] == ' ' && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
         if(To == 57 &&  kingside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ') IsitLegal = true;
+      }
       }
       if(whiteincheckking == true){
         return false;
@@ -1711,8 +1716,14 @@ void addMove(int fromLocation, int toLocation, boolean tellStockfish) {
   if (cherry < 50) return;
   cherry = 0;
   
-  if (fromLocation == 56 || fromLocation == 60) queenside_cherry = false;
-  if (fromLocation == 63 || fromLocation == 60) kingside_cherry = false;
+  //If the rook or the king moves, set castling rights to false
+  if(which_side == 'w'){
+    if (fromLocation == 56 || fromLocation == 60) queenside_cherry = false;
+    if (fromLocation == 63 || fromLocation == 60) kingside_cherry = false;
+  }else if(which_side == 'b'){
+    if (fromLocation == 63 || fromLocation == 59) queenside_cherry = false;
+    if (fromLocation == 56 || fromLocation == 59) kingside_cherry = false;
+  }
 
   if (promoted_player_cherry == false) movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + " ";
   if (promoted_player_cherry == true)  movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + (char)(promoted_pawn ^ 0x20) + " ";

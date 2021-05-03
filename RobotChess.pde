@@ -57,7 +57,7 @@ int bbcIndex = 420;
 
 //A string storing the current board state in FEN notation
 String cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-String blk_fen = "rnbkqbnr/ppp1pppp/8/3p4/8/8/PPPPPPPP/RNBKQBNR w KQkq - 0 1";
+String blk_fen = "rnbkqbnr/ppp1pppp/8/3p4/8/8/PPPPPPPP/RNBKQBNR b KQkq - 0 1";
 
 byte BitBoard[] = new byte[64];
 byte TempBoard[] = new byte[64];
@@ -298,30 +298,56 @@ void updatePieces() {
   
        bbcIndex = (int) floor(pressed_x/(int)gridSize)+floor(pressed_y/(int)gridSize)*8;
   int TobbIndex = (int) floor(the_x/(int)gridSize)+floor(the_y/(int)gridSize)*8;
-  
-  if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex ==  2) { //kingside  castle white
-          BitBoard[61] = 'R';
-          BitBoard[63] = ' ';
-          castling_occured = true;
-          castling_side = true;
-        }
-        if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex == -2) { //queenside castle white
-          BitBoard[59] = 'R';
-          BitBoard[56] = ' ';
-          castling_occured = true;
-          castling_side = false;
-        }
-        if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex ==  2) { //kingside  castle black
-          BitBoard[5]  = 'r';
-          BitBoard[7]  = ' ';
-          castling_occured = true;
-          castling_side = true;
-        }
-        if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex == -2) { //queenside castle black
-          BitBoard[3]  = 'r';
-          BitBoard[0]  = ' ';
-          castling_occured = true;
-          castling_side = false;
+  if(which_side == 'w') {
+          if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex ==  2) { //kingside  castle white
+            BitBoard[61] = 'R';
+            BitBoard[63] = ' ';
+            castling_occured = true;
+            castling_side = true;
+          }
+          if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex == -2) { //queenside castle white
+            BitBoard[59] = 'R';
+            BitBoard[56] = ' ';
+            castling_occured = true;
+            castling_side = false;
+          }
+          if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex ==  2) { //kingside  castle black
+            BitBoard[5]  = 'r';
+            BitBoard[7]  = ' ';
+            castling_occured = true;
+            castling_side = true;
+          }
+          if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex == -2) { //queenside castle black
+            BitBoard[3]  = 'r';
+            BitBoard[0]  = ' ';
+            castling_occured = true;
+            castling_side = false;
+          }
+        }else{ // If the player is playing as Black
+          if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex ==  -2) { //kingside  castle black
+            BitBoard[58] = 'R';
+            BitBoard[56] = ' ';
+            castling_occured = true;
+            castling_side = true;
+          }
+          if (BitBoard[bbcIndex] == 'K' && TobbIndex-bbcIndex == 2) { //queenside castle black
+            BitBoard[60] = 'R';
+            BitBoard[63] = ' ';
+            castling_occured = true;
+            castling_side = false;
+          }
+          if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex ==  -2) { //kingside  castle white
+            BitBoard[2]  = 'r';
+            BitBoard[0]  = ' ';
+            castling_occured = true;
+            castling_side = true;
+          }
+          if (BitBoard[bbcIndex] == 'k' && TobbIndex-bbcIndex == 2) { //queenside castle white
+            BitBoard[4]  = 'r';
+            BitBoard[7]  = ' ';
+            castling_occured = true;
+            castling_side = false;
+          }
         }
   
   if (BitBoard[bbcIndex] == 'P' && TobbIndex < 8) { 
