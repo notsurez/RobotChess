@@ -37,7 +37,7 @@ void setup() {
   for(int i = 0; i < 64; i++) BitBoard[i] = ' ';
   //========================================================================
   // SET COM PORT HERE
-  visPort = new Serial(this, Serial.list()[1], 4800);
+  visPort = new Serial(this, Serial.list()[5], 4800, 'N', 8, 1.0);
   size(1200,800);
   
   background(50,50,70);
@@ -49,67 +49,77 @@ void setup() {
   
   println("Initializing uCPU");
   //uCPUinit(1); //use the 2nd COM port
-  frameRate(60);
+  frameRate(240);
 }
 
 void draw() {
-  if (is_moving == false) {
-   delay(1000);
-   is_moving = true;
-   move_number++;
-   if (move_number == 1)  visPort.write("yyv:::Z:wyv2458C");
-   if (move_number == 2)  visPort.write("ywv:B:Z:wyv2458P");
-   if (move_number == 3)  visPort.write("ywv:B:ZZwuv2421C");
-   if (move_number == 4)  visPort.write("ywVBB:ZZwuv2421P");
-   if (move_number == 5)  visPort.write("ywVBF:Z:wuv2339C");
-   if (move_number == 6)  visPort.write("ywV:F:Z:wuv2339P");
-   if (move_number == 7)  visPort.write("ywV:F<Z:wuf2246C");
-   if (move_number == 8)  visPort.write("ywV:B<Z:wuf2246P");
-   if (move_number == 9)  visPort.write("ywV:B<Z>wu^2200C");
-   if (move_number == 10) visPort.write("yvVJB<Z>wu^2200P");
-   if (move_number == 11) visPort.write("yvV:F<Z>wuU2127C");
-   if (move_number == 12) visPort.write("yvV:B<Z>wuS2127P");
-  }
+  //if (is_moving == false) {
+  // delay(1000);
+  // is_moving = true;
+  // move_number++;
+   //if (move_number == 1)  visPort.write("yyv:::Z:wyv2458C");
+   //if (move_number == 2)  visPort.write("ywv:B:Z:wyv2458P");
+   //if (move_number == 3)  visPort.write("ywv:B:ZZwuv2421C");
+   //if (move_number == 4)  visPort.write("ywVBB:ZZwuv2421P");
+   //if (move_number == 5)  visPort.write("ywVBF:Z:wuv2339C");
+   //if (move_number == 6)  visPort.write("ywV:F:Z:wuv2339P");
+   //if (move_number == 7)  visPort.write("ywV:F<Z:wuf2246C");
+   //if (move_number == 8)  visPort.write("ywV:B<Z:wuf2246P");
+   //if (move_number == 9)  visPort.write("ywV:B<Z>wu^2200C");
+   //if (move_number == 10) visPort.write("yvVJB<Z>wu^2200P");
+   //if (move_number == 11) visPort.write("yvV:F<Z>wuU2127C");
+   //if (move_number == 12) visPort.write("yvV:B<Z>wuS2127P");
+  //}
   
   background(0);
   while (visPort.available() > 0) {
-    String inBuffer = visPort.readString();   
+    String inBuffer = str(visPort.readChar());   
     if (inBuffer != null) {
       board[row][col].move(inBuffer);
-      is_moving = true;
-      if(inBuffer.contains("E")){
+      if(inBuffer.contains("#")){
         magnet_engaged = true;
-      }else if(inBuffer.contains("S")) {
+              is_moving = true;
+      }else if(inBuffer.contains("$")) {
         magnet_engaged = false;
-      }else if(inBuffer.contains("R")){
+              is_moving = true;
+      }else if(inBuffer.contains(">")){
         mag_x += inc;
-      }else if(inBuffer.contains("L")){
+              is_moving = true;
+      }else if(inBuffer.contains("<")){
         mag_x -= inc;
-      }else if(inBuffer.contains("U")){
+              is_moving = true;
+      }else if(inBuffer.contains("+")){
         mag_y -= inc;
-      }else if(inBuffer.contains("D")){
+              is_moving = true;
+      }else if(inBuffer.contains("|")){
         mag_y += inc;
-      }else if(inBuffer.contains("R") || inBuffer.contains("r")){
+              is_moving = true;
+      }else if(inBuffer.contains(">") || inBuffer.contains("}")){
         mag_x += inc;
-      }else if(inBuffer.contains("L") || inBuffer.contains("l")){
+              is_moving = true;
+      }else if(inBuffer.contains("<") || inBuffer.contains("{")){
         mag_x -= inc;
-      }else if(inBuffer.contains("U") || inBuffer.contains("u")){
+              is_moving = true;
+      }else if(inBuffer.contains("+") || inBuffer.contains("]")){
         mag_y -= inc;
-      }else if(inBuffer.contains("D") || inBuffer.contains("d")){
+              is_moving = true;
+      }else if(inBuffer.contains("|") || inBuffer.contains("[")){
         mag_y += inc;
-      }else if(inBuffer.contains("F")){
-        is_moving = false;
+              is_moving = true;
+      }else if(inBuffer.contains("!")){
+              is_moving = false;
       }
-      println(inBuffer);
+      print(inBuffer);
     }
   }
     
-    delay(10);
+    //delay(10);
     drawBoard();
     drawPieces();
     drawMag(mag_x, mag_y, magnet_engaged);
     
     textSize(10);
+    if (is_moving == false) fill(255,255,255);
     text(round(frameRate) + " FPS", width - 50, 20);
 }
 

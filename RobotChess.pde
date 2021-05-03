@@ -80,6 +80,8 @@ boolean promotionNotSelected = true;
 boolean queenside_cherry = true;
 boolean kingside_cherry  = true;
 
+boolean paused = false;
+
 void setup() { 
   for(int i = 0; i < 64; i++) BitBoard[i] = ' ';
   
@@ -119,7 +121,7 @@ void setup() {
   //readFen(cur_fen);
   //drawPieces();
   
-  uCPUinit(0); //use the 2nd COM port
+  uCPUinit(4); //use the 2nd COM port
 }
 
 void draw() {  
@@ -159,6 +161,8 @@ void draw() {
     //println("made it out alive");
     textSize(10);
     text(round(frameRate) + " FPS", width - 50, 20);
+    
+    if (paused == true) text("Click to continue once the board made its move", width - 150, height / 2);
   break;
   
   case 3:
@@ -419,7 +423,7 @@ void mousePressed() {
   for (int i = 0; i<8; i++){
     for (int j = 0; j<8; j++) { 
       //do not allow picking up enemy pieces
-      if (board[i][j] != null && (board[i][j].pieceType == 'K' || board[i][j].pieceType == 'Q' || board[i][j].pieceType == 'R' || board[i][j].pieceType == 'N' || board[i][j].pieceType == 'B' || board[i][j].pieceType == 'P')) {
+      if (paused == false && board[i][j] != null && (board[i][j].pieceType == 'K' || board[i][j].pieceType == 'Q' || board[i][j].pieceType == 'R' || board[i][j].pieceType == 'N' || board[i][j].pieceType == 'B' || board[i][j].pieceType == 'P')) {
         if(board[i][j].MouseIsOver()) {
           board[i][j].selected = true;
           board[i][j].fillArray();
@@ -529,7 +533,10 @@ void mouseReleased() {
   int i = (the_new_x)/100;
   int j = (the_new_y)/100;
 
-  if (i > 7 || j > 7) println("Overflow error!"); //this should never happen
+  if (i > 7 || j > 7) {
+    println("Overflow error!"); //this should never happen unless you click outside of the pieces
+    paused = false; 
+  }
     if (i < 8 && j < 8) {
       //do not allow moving enemy pieces
       
@@ -698,6 +705,7 @@ void newGame() {
     cpuAnal = 0;
     queenside_cherry = true;
      kingside_cherry = true;
+     paused = false;
     for(int i = 0; i < 8; i++) {
      for(int j = 0; j < 8; j++) {
       board[i][j] = null; 

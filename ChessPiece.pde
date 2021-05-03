@@ -427,9 +427,6 @@ boolean isLegal1(int From, int To){
     
     switch(PlayersPiece){
       case 'P': // White Pawn
-      if(To == From){
-        return true;
-      }
         if(From >= 48 && From < 56){//Condition for testing if the pawn is on the 2nd rank and can move two squares
           if(To-From == -16 || To-From == -8){
           IsitLegal = true;
@@ -462,9 +459,6 @@ boolean isLegal1(int From, int To){
   break;
            
       case 'R': //White Rook
-            if(To == From){
-        return true;
-      }
            if((x_2 == x_1&&(y_2 < y_1)&&(To != From))){
          IsitLegal = true;
        if((BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P')){
@@ -507,9 +501,6 @@ boolean isLegal1(int From, int To){
       break;     
       
       case 'N': //White Knight
-            if(To == From){
-        return true;
-      }
      if((abs(m) == 0.5||abs(m) == 2)&&(d == sqrt(5))){
        IsitLegal = true;
              if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
@@ -523,9 +514,6 @@ boolean isLegal1(int From, int To){
       break;      
       
       case 'B': //White Bishop// 
-            if(To == From){
-        return true;
-      }  
     if((m == -1)&&(y_2 > y_1)&&(southwest == false)){
         IsitLegal = true;
         if(BitBoard[To] == 'P' ||BitBoard[To] == 'R' ||BitBoard[To] == 'B'||BitBoard[To] == 'N'||BitBoard[To] == 'Q'||BitBoard[To] == 'K'){
@@ -562,11 +550,7 @@ boolean isLegal1(int From, int To){
       }
       break;
       
-      case 'Q': //White Queen
-            if(To == From){
-        return true;
-      }
-            
+      case 'Q': //White Queen  
        if((m == -1)&&(y_2 > y_1)&&(southwest == false)){
         IsitLegal = true;
         if(BitBoard[To] == 'P' ||BitBoard[To] == 'R' ||BitBoard[To] == 'B'||BitBoard[To] == 'N'||BitBoard[To] == 'Q'||BitBoard[To] == 'K'){
@@ -643,9 +627,6 @@ boolean isLegal1(int From, int To){
      
       break;
       case 'K': //White King
-      if(To == From){
-        return true;
-      }
       if((m == -1)&&(y_2 > y_1)&&(southwest == false)){
          if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              southwest = true;
@@ -1119,9 +1100,14 @@ boolean isLegal1(int From, int To){
     
     switch(PlayersPiece){
       case 'P': // White Pawn
-            if(To == From){
-        return true;
-      }
+                   if((x_2 == x_1&&(y_2 < y_1)&&(To != From)&&up == false)){
+                     IsitLegal = true;
+         if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'b'||BitBoard[To] == 'k'||BitBoard[To] == 'r'||BitBoard[To] == 'q'){
+             up = true;
+             return false;
+           }
+     }
+     if(up == false){
         if(From >= 48 && From < 56){//Condition for testing if the pawn is on the 2nd rank and can move two squares
           if(To-From == -16 || To-From == -8){
           IsitLegal = true;
@@ -1143,7 +1129,6 @@ boolean isLegal1(int From, int To){
             return false;
         }
             }
-
       if((To-From == -7||To-From == -9) && (BitBoard[To] == 'p'||BitBoard[To] =='q'||BitBoard[To] =='b'||BitBoard[To] == 'n'||BitBoard[To] == 'r')){ // Condition to test if the pawn is making a capture
         IsitLegal = true;
               if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
@@ -1153,13 +1138,10 @@ boolean isLegal1(int From, int To){
    if(To < 0|| To > 63){ //returns false if move is off the board
         return false;
       }
-
+     }
       break;
            
       case 'R': //White Rook
-            if(To == From){
-        return true;
-      }
        if((x_2 == x_1&&(y_2 < y_1)&&(To != From)&&up == false)){
          IsitLegal = true;
        if((BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] == 'P'||BitBoard[To] == 'K')){
@@ -1203,9 +1185,6 @@ boolean isLegal1(int From, int To){
       break;     
       
       case 'N': //White Knight
-            if(To == From){
-        return true;
-      }
      if((abs(m) == 0.5||abs(m) == 2)&&(d == sqrt(5))){
        IsitLegal = true;
              if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
@@ -1219,9 +1198,6 @@ boolean isLegal1(int From, int To){
       break;      
       
       case 'B': //White Bishop// 
-            if(To == From){
-        return true;
-      }
      if((m == 1)&&(y_2 < y_1)&&(northwest == false)){
         IsitLegal = true;
         if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){
@@ -1260,10 +1236,6 @@ boolean isLegal1(int From, int To){
       break;
       
       case 'Q': //White Queen
-            if(To == From){
-        return true;
-      }
-
    if((m == 1)&&(y_2 < y_1)&&(northwest == false)){
         IsitLegal = true;
         if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){
@@ -1337,9 +1309,6 @@ boolean isLegal1(int From, int To){
       break;
       
       case 'K': //White King
-            if(To == From){
-        return true;
-      }
          if((m == 1)&&(y_2 < y_1)&&(northwest == false)){
            if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] == 'P'||BitBoard[To] == 'n'||BitBoard[To] == 'p'||BitBoard[To] == 'r'||BitBoard[To] == 'k'){
              northwest = true;
@@ -1773,6 +1742,8 @@ void addMove(int fromLocation, int toLocation, boolean tellStockfish) {
     microPC.write(bbCoordString(toLocation));
     microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
     microPC.write(turnState);
+    microPC.write(turnState);
+    delay(250);
   }
   
   if (tellStockfish) {

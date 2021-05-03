@@ -225,6 +225,9 @@ String listen() {
       microPC.write(bbCoordString(toPos));
       microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
       microPC.write(turnState);
+      microPC.write(turnState);
+      paused = true;
+      //delay(15000); //wait for the move to complete
     }
     
   if (oldPiece == 'p' && toPos > 55) {
