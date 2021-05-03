@@ -162,7 +162,8 @@ void draw() {
     textSize(10);
     text(round(frameRate) + " FPS", width - 50, 20);
     
-    if (paused == true) text("Click to continue once the board made its move", width - 150, height / 2);
+    if (board_connected == false) paused = false;
+    if (paused == true) text("Click to continue once the board made its move", width - 300, height / 2);
   break;
   
   case 3:
@@ -705,7 +706,6 @@ void newGame() {
     cpuAnal = 0;
     queenside_cherry = true;
      kingside_cherry = true;
-     paused = false;
     for(int i = 0; i < 8; i++) {
      for(int j = 0; j < 8; j++) {
       board[i][j] = null; 
@@ -719,4 +719,6 @@ void newGame() {
     movesHistory = " moves ";
     evalString = "e7e5";
     if (which_side == 'w') evalString = "e2e4";
+    if (board_connected == true) microPC.write("``````````");
+    paused = true;
 }

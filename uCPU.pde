@@ -89,6 +89,7 @@ void keepTime() {
    //println(turnState);
    
    if(turnState == 'P') {
+     if (player_time == 0) game_gg = true;
      player_time--;
      
      //print("Emulated clock  communications --> ");
@@ -98,6 +99,7 @@ void keepTime() {
      microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
      microPC.write("UU");
    }else {
+    if (computer_time == 0) game_gg = true;
     computer_time--; 
    }
   m = millis(); 

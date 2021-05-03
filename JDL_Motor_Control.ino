@@ -194,6 +194,8 @@ void loop() {
     for (int b = 0; b < 4; b++)      serialPlayerinput[b] = Serial.read();
     rgbLedColor = Serial.read();
 
+    if (rgbLedColor == '`') reset_board();
+
     if (debug_print == true) {
       Serial.print(F("Received: Base64input "));
       Serial.println(serialBase64input);
@@ -336,6 +338,8 @@ skip_castling = 0;
       if (debug_print == true) Serial.println(playerTimeRemaining);
   }
 
+  if (playerTimeRemaining > 1500) playerTimeRemaining = 1500;
+  if (playerTimeRemaining < 0)    playerTimeRemaining = 0;
   digitalWrite(latchPin, LOW);
   shiftOut(dataPin, clockPin, dec2bcd((playerTimeRemaining/100)%100));
   shiftOut(dataPin, clockPin, dec2bcd(playerTimeRemaining%100));
@@ -1171,4 +1175,16 @@ void disengage_mag(){
   delay(500);
   Serial.print(F("$"));
   delay(slow_her_down);
+}
+
+void reset_board() {
+  serialBase64input[0] = 'x';
+  if (debug_print == true) Serial.println(F("Resetting board"));
+  char garbage;
+  while (Serial.available()) garbage = Serial.read();
+  if (strncmp(gameBoardState, default_gameBoardState, 96) == 0) {
+    Serial.println(F("The board is already in the default position"));
+    return;
+  }
+  //reset code goes here
 }

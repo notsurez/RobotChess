@@ -199,9 +199,9 @@ void updateBB() {
       }
       
       //prevent castling through check
-  if(8*(pressed_y2/100) + (pressed_x2/100) == 60 && BitBoard[60] == 'K') {
-    if(queenside_cherry == false || shesLegal[60] == false || shesLegal[59] == false || shesLegal[58] == false) shesLegal[58] = false;
-    if(kingside_cherry  == false || shesLegal[60] == false || shesLegal[61] == false || shesLegal[62] == false) shesLegal[62] = false;
+  if(bbIndex == 60 && BitBoard[60] == 'K') {
+    if(queenside_cherry == false || shesLegal[59] == false || shesLegal[58] == false) shesLegal[58] = false;
+    if(kingside_cherry  == false || shesLegal[61] == false || shesLegal[62] == false) shesLegal[62] = false;
   }
   for(int i = 0; i < 64; i++) {
     if (shesLegal[i] == true) {
