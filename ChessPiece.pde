@@ -16,8 +16,8 @@ import java.util.BitSet;
   boolean wksc = true;
   
   boolean heardBestmove = false;
-  boolean legalMoves[] = new boolean[64];
   
+  boolean legalMoves[] = new boolean[64];
 class ChessPiece {
   
   PImage wp, wr, wn, wb, wq, wk, bp, br, bn, bb, bq, bk; //Initialize individual PImages for each piece
@@ -26,7 +26,6 @@ class ChessPiece {
   char pieceType; 
   Boolean selected = false;
   boolean firstMove = false;
-  
   boolean first = true; 
   boolean isPinnedup = false;   boolean isPinnedright = false;   boolean isPinneddown = false;   boolean isPinnedleft = false;  boolean isPinnednorthwest = false;  boolean isPinnednortheast = false;   boolean isPinnedsouthwest = false;   boolean isPinnedsoutheast = false;
   boolean southwest = false, southeast = false, northeast = false , northwest = false, up = false, right = false, down = false, left = false;
@@ -188,6 +187,31 @@ void updateBB() {
     
     //addMove(bbIndex, TobbIndex, true);
 }
+  
+  void highlightLegal() {
+    if(selected){
+      //println(pieceType, " on ",bbIndex);
+      for(int i = 0; i < 64; i++) {
+        shesLegal[i] = false;
+        if(legalMoves[i] == true){
+          shesLegal[i] = true;
+        }
+      }
+      
+      //prevent castling through check
+  if(bbIndex == 60 && BitBoard[60] == 'K') {
+    if(queenside_cherry == false || shesLegal[59] == false || shesLegal[58] == false) shesLegal[58] = false;
+    if(kingside_cherry  == false || shesLegal[61] == false || shesLegal[62] == false) shesLegal[62] = false;
+  }
+  for(int i = 0; i < 64; i++) {
+    if (shesLegal[i] == true) {
+      fill(40, 40, 80);
+          //println(bbIndex, " => ", i);
+          ellipse(gridSize/2 + (i%8)*(gridSize),gridSize/2 + (floor(i/8))*(gridSize),gridSize/4,gridSize/4);
+    }
+  }
+    }
+  }
   
 void fillArray() {
     boolean forward[] = new boolean[64];

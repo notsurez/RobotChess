@@ -61,7 +61,7 @@ char oldbitBoard[66];
 char gameBoardState[96];
 char oldgameBoardState[96];
 
-char discardPile[16];
+char discardPile[32];
 byte number_discarded = 0;
 
 int fromPos = 420;
@@ -82,7 +82,8 @@ const char default_gameBoardState[96] = {C_ROOK, C_HORSE, C_BISHOP, C_QUEEN, C_K
                     EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE,
                     EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE};
 
-const char default_discardPile[16] = {EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE,
+const char default_discardPile[32] = {EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE,
+                    EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE,
                     EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE, EMPTY_TILE};
 
 byte numPieces = 32;
@@ -175,7 +176,7 @@ void setup() {
 
 memcpy(gameBoardState, default_gameBoardState, 96);
 memcpy(oldgameBoardState, default_gameBoardState, 96);
-memcpy(discardPile, default_discardPile, 16);
+memcpy(discardPile, default_discardPile, 32);
 
   digitalWrite(motorDriver_Reset, HIGH);
 }
@@ -441,7 +442,7 @@ if ((from < 69) && (to < 69)) {
     }
     if (debug_print == true) Serial.println(F(""));
     if (debug_print == true) Serial.println(F("Discard pile:"));
-  for(byte nig = 0; nig < 16; nig++) {
+  for(byte nig = 0; nig < 32; nig++) {
   if (debug_print == true) Serial.print(nig + 1);
   if (debug_print == true) Serial.print(F(": "));
   if (debug_print == true) Serial.println(discardPile[nig]);
@@ -1187,4 +1188,75 @@ void reset_board() {
     return;
   }
   //reset code goes here
+  memcpy(oldgameBoardState, gameBoardState, 96);
+  for(int i = 0; i < 64; i++) {
+    if (gameBoardState[i] != EMPTY_TILE) motorEliminate(i, i);
+  }
+
+  if (debug_print == true) Serial.println(F(""));
+    if (debug_print == true) Serial.println(F("Discard pile:"));
+  for (byte i = 0; i < 32; i++) {
+  if (debug_print == true) Serial.print(i + 1);
+  if (debug_print == true) Serial.print(F(": "));
+  if (debug_print == true) Serial.println(discardPile[i]);
+  }
+  for (byte n = 0; n < 96; n++) {
+    gameBoardState[n] = EMPTY_TILE;
+    oldgameBoardState[n] = EMPTY_TILE;
+  }
+  byte bpawn_index =  8;
+  byte wpawn_index = 48;
+  for (byte j = 0; j < 32; j++) {
+    if (discardPile[j] == P_KING)  restore_garbage(j, 60); //move from garbage[j] to 60
+    if (discardPile[j] == P_QUEEN) restore_garbage(j, 59); //move from garbage[j] to 59
+    if (discardPile[j] == P_ROOK   && gameBoardState[56] != P_ROOK)   restore_garbage(j, 56); //move from garbage[j] to 59
+    if (discardPile[j] == P_ROOK   && gameBoardState[56] == P_ROOK)   restore_garbage(j, 63); //move from garbage[j] to 63
+    if (discardPile[j] == P_BISHOP && gameBoardState[58] != P_BISHOP) restore_garbage(j, 58); //move from garbage[j] to 58
+    if (discardPile[j] == P_BISHOP && gameBoardState[58] == P_BISHOP) restore_garbage(j, 61); //move from garbage[j] to 61
+    if (discardPile[j] == P_HORSE  && gameBoardState[57] != P_HORSE)  restore_garbage(j, 57); //move from garbage[j] to 58
+    if (discardPile[j] == P_HORSE  && gameBoardState[57] == P_HORSE)  restore_garbage(j, 62); //move from garbage[j] to 61
+    if (discardPile[j] == P_PAWN) {
+      restore_garbage(j, wpawn_index);
+      wpawn_index++;
+    }
+    if (discardPile[j] == C_KING)  restore_garbage(j, 4); //move from garbage[j] to 4
+    if (discardPile[j] == C_QUEEN) restore_garbage(j, 3); //move from garbage[j] to 3
+    if (discardPile[j] == C_ROOK   && gameBoardState[0] != C_ROOK)   restore_garbage(j, 0); //move from garbage[j] to 0
+    if (discardPile[j] == C_ROOK   && gameBoardState[0] == C_ROOK)   restore_garbage(j, 7); //move from garbage[j] to 7
+    if (discardPile[j] == C_BISHOP && gameBoardState[2] != C_BISHOP) restore_garbage(j, 2); //move from garbage[j] to 2
+    if (discardPile[j] == C_BISHOP && gameBoardState[2] == C_BISHOP) restore_garbage(j, 5); //move from garbage[j] to 5
+    if (discardPile[j] == C_HORSE  && gameBoardState[1] != C_HORSE)  restore_garbage(j, 1); //move from garbage[j] to 1
+    if (discardPile[j] == C_HORSE  && gameBoardState[1] == C_HORSE)  restore_garbage(j, 1); //move from garbage[j] to 1
+    if (discardPile[j] == C_PAWN) {
+      restore_garbage(j, bpawn_index);
+      bpawn_index++;
+    }
+  }
+
+  memcpy(gameBoardState, default_gameBoardState, 96);
+  memcpy(oldgameBoardState, default_gameBoardState, 96);
+  memcpy(discardPile, default_discardPile, 32);
+}
+
+void restore_garbage(byte garbage_tile, byte destination) {
+  if (debug_print == true) {
+    Serial.print(F("Moving garbage tile "));
+    Serial.print(garbage_tile);
+    Serial.print(F(" to board location "));
+    Serial.println(destination); 
+  }
+
+  if (garbage_tile < 16) left_garbage(garbage_tile, destination);
+  if (garbage_tile > 15) right_garbage(garbage_tile - 16, destination);
+  
+  gameBoardState[destination] = discardPile[garbage_tile];
+  oldgameBoardState[destination] = discardPile[garbage_tile];
+}
+
+void left_garbage(byte garbage_tile, byte destination) {
+  //David put your code here
+}
+
+void right_garbage(byte garbage_tile, byte destination) {
+  //David put your code here
 }

@@ -95,9 +95,11 @@ void keepTime() {
      //print("Emulated clock  communications --> ");
      //println(str(toBase64(BitBoard, false, false, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
      
+     if (board_connected == true) {
      microPC.write("xxxx");
      microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
      microPC.write("UU");
+     }
    }else {
     if (computer_time == 0) game_gg = true;
     computer_time--; 
