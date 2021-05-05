@@ -16,8 +16,8 @@ import java.util.BitSet;
   boolean wksc = true;
   
   boolean heardBestmove = false;
-  
   boolean legalMoves[] = new boolean[64];
+  
 class ChessPiece {
   
   PImage wp, wr, wn, wb, wq, wk, bp, br, bn, bb, bq, bk; //Initialize individual PImages for each piece
@@ -26,6 +26,7 @@ class ChessPiece {
   char pieceType; 
   Boolean selected = false;
   boolean firstMove = false;
+  
   boolean first = true; 
   boolean isPinnedup = false;   boolean isPinnedright = false;   boolean isPinneddown = false;   boolean isPinnedleft = false;  boolean isPinnednorthwest = false;  boolean isPinnednortheast = false;   boolean isPinnedsouthwest = false;   boolean isPinnedsoutheast = false;
   boolean southwest = false, southeast = false, northeast = false , northwest = false, up = false, right = false, down = false, left = false;
@@ -187,31 +188,6 @@ void updateBB() {
     
     //addMove(bbIndex, TobbIndex, true);
 }
-  
-  void highlightLegal() {
-    if(selected){
-      //println(pieceType, " on ",bbIndex);
-      for(int i = 0; i < 64; i++) {
-        shesLegal[i] = false;
-        if(legalMoves[i] == true){
-          shesLegal[i] = true;
-        }
-      }
-      
-      //prevent castling through check
-  if(bbIndex == 60 && BitBoard[60] == 'K') {
-    if(queenside_cherry == false || shesLegal[59] == false || shesLegal[58] == false) shesLegal[58] = false;
-    if(kingside_cherry  == false || shesLegal[61] == false || shesLegal[62] == false) shesLegal[62] = false;
-  }
-  for(int i = 0; i < 64; i++) {
-    if (shesLegal[i] == true) {
-      fill(40, 40, 80);
-          //println(bbIndex, " => ", i);
-          ellipse(gridSize/2 + (i%8)*(gridSize),gridSize/2 + (floor(i/8))*(gridSize),gridSize/4,gridSize/4);
-    }
-  }
-    }
-  }
   
 void fillArray() {
     boolean forward[] = new boolean[64];
@@ -668,7 +644,7 @@ boolean isLegal1(int From, int To){
          right = true;
        }
      }
-           if((To-From == -7||To-From == -9)){ 
+           if((d == sqrt(2)) && (y_2 < y_1)){ 
               if(BitBoard[To] == 'p'){ 
         whiteincheckpawn = true;
       }
@@ -710,8 +686,14 @@ boolean isLegal1(int From, int To){
       if(To > 63 ||To < 0){ //Returns false if the king is moved off the board
         return false;
       } 
-                  if(To == 58 && queenside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ' && BitBoard[59] == ' ') IsitLegal = true;
-      if(To == 62 &&  kingside_cherry == true && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
+      //castling logic
+      if(which_side == 'w') {
+        if(To == 58 && queenside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ' && BitBoard[59] == ' ') IsitLegal = true;
+        if(To == 62 &&  kingside_cherry == true && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
+      }else{
+        if(To == 61 && queenside_cherry == true && BitBoard[60] == ' ' && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
+        if(To == 57 &&  kingside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ') IsitLegal = true;
+      }
       }
       if(whiteincheckrt == true){
                 if(To-From == 1){
@@ -1139,6 +1121,15 @@ boolean isLegal1(int From, int To){
         return false;
       }
      }
+     
+     if (up == true){
+         if((To-From == -7||To-From == -9) && (BitBoard[To] == 'p'||BitBoard[To] =='q'||BitBoard[To] =='b'||BitBoard[To] == 'n'||BitBoard[To] == 'r')){ // Condition to test if the pawn is making a capture
+           IsitLegal = true;
+           if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
+        return false;
+      }
+      }  
+     }
       break;
            
       case 'R': //White Rook
@@ -1359,7 +1350,7 @@ boolean isLegal1(int From, int To){
          whiteincheckking = true;
        }
      }
-           if(whiteincheckrt == false&&whiteincheckdn == false&&whiteinchecklt == false&&whiteincheckup == false && whiteinchecknw==false && whiteincheckne==false && whiteinchecksw == false && whiteincheckse == false){
+        if(whiteincheckrt == false&&whiteincheckdn == false&&whiteinchecklt == false&&whiteincheckup == false && whiteinchecknw==false && whiteincheckne==false && whiteinchecksw == false && whiteincheckse == false){
                 
         if((To-From == -7||To-From == -9) && (BitBoard[To] == 'p')){ // Condition to test if the pawn is making a capture
         IsitLegal = true;
@@ -1382,8 +1373,13 @@ boolean isLegal1(int From, int To){
       if(To > 63 ||To < 0){ //Returns false if the king is moved off the board
         return false;
       } 
-            if(To == 58 && queenside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ' && BitBoard[59] == ' ') IsitLegal = true;
-      if(To == 62 &&  kingside_cherry == true && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
+      if(which_side == 'w') {
+        if(To == 58 && queenside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ' && BitBoard[59] == ' ') IsitLegal = true;
+        if(To == 62 &&  kingside_cherry == true && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
+      }else{
+        if(To == 61 && queenside_cherry == true && BitBoard[60] == ' ' && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;
+        if(To == 57 &&  kingside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ') IsitLegal = true;
+      }
       }
       if(whiteincheckking == true){
         return false;
@@ -1729,13 +1725,19 @@ void addMove(int fromLocation, int toLocation, boolean tellStockfish) {
   if (cherry < 50) return;
   cherry = 0;
   
-  if (fromLocation == 56 || fromLocation == 60) queenside_cherry = false;
-  if (fromLocation == 63 || fromLocation == 60) kingside_cherry = false;
+  //If the rook or the king moves, set castling rights to false
+  if(which_side == 'w'){
+    if (fromLocation == 56 || fromLocation == 60) queenside_cherry = false;
+    if (fromLocation == 63 || fromLocation == 60) kingside_cherry = false;
+  }else if(which_side == 'b'){
+    if (fromLocation == 63 || fromLocation == 59) queenside_cherry = false;
+    if (fromLocation == 56 || fromLocation == 59) kingside_cherry = false;
+  }
 
   if (promoted_player_cherry == false) movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + " ";
   if (promoted_player_cherry == true)  movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + (char)(promoted_pawn ^ 0x20) + " ";
   promoted_player_cherry = false;
-  
+  println(castling_occured);
   if (board_connected == true) {
     println("sending white move to uCPU: " + bbCoordString(fromLocation) + bbCoordString(toLocation) + str(((player_time / 60)*100) + (player_time % 60) + 1000) + turnState);
     microPC.write(bbCoordString(fromLocation));
@@ -1747,7 +1749,9 @@ void addMove(int fromLocation, int toLocation, boolean tellStockfish) {
   }
   
   if (tellStockfish) {
-  stockfish.say("position fen " + cur_fen + movesHistory);
+    generate_fen();
+  stockfish.say("position fen " + new_fen + movesHistory);
+  movesHistory = " moves ";
   delay(20);
   stockfish.say("go movetime 1000"); //replace the 1000 with the amount of time to run engine in millis
   m = millis();

@@ -175,29 +175,65 @@ String listen() {
         //print("-->");
         //println(toPos);
         
-        if (BitBoard[fromPos] == 'K' && toPos-fromPos ==  2) { //kingside  castle white
-          BitBoard[61] = 'R';
-          BitBoard[63] = ' ';
-          castling_occured = true;
-          castling_side = true;
-        }
-        if (BitBoard[fromPos] == 'K' && toPos-fromPos == -2) { //queenside castle white
-          BitBoard[59] = 'R';
-          BitBoard[56] = ' ';
-          castling_occured = true;
-          castling_side = false;
-        }
-        if (BitBoard[fromPos] == 'k' && toPos-fromPos ==  2) { //kingside  castle black
-          BitBoard[5]  = 'r';
-          BitBoard[7]  = ' ';
-          castling_occured = true;
-          castling_side = true;
-        }
-        if (BitBoard[fromPos] == 'k' && toPos-fromPos == -2) { //queenside castle black
-          BitBoard[3]  = 'r';
-          BitBoard[0]  = ' ';
-          castling_occured = true;
-          castling_side = false;
+        //If the rook or the king moves, set castling rights to false
+  if(which_side == 'w'){
+    if (fromPos == 0 || fromPos == 5) queenside_cherry_b = false;
+    if (fromPos == 7 || fromPos == 5) kingside_cherry_b  = false;
+  }else if(which_side == 'b'){
+    if (fromPos == 0 || fromPos == 5) queenside_cherry_b = false;
+    if (fromPos == 7 || fromPos == 5) kingside_cherry_b  = false;
+  }
+  
+        if(which_side == 'w') {
+          if (BitBoard[fromPos] == 'K' && toPos-fromPos ==  2) { //kingside  castle white
+            BitBoard[61] = 'R';
+            BitBoard[63] = ' ';
+            castling_occured = true;
+            castling_side = true;
+          }
+          if (BitBoard[fromPos] == 'K' && toPos-fromPos == -2) { //queenside castle white
+            BitBoard[59] = 'R';
+            BitBoard[56] = ' ';
+            castling_occured = true;
+            castling_side = false;
+          }
+          if (BitBoard[fromPos] == 'k' && toPos-fromPos ==  2) { //kingside  castle black
+            BitBoard[5]  = 'r';
+            BitBoard[7]  = ' ';
+            castling_occured = true;
+            castling_side = true;
+          }
+          if (BitBoard[fromPos] == 'k' && toPos-fromPos == -2) { //queenside castle black
+            BitBoard[3]  = 'r';
+            BitBoard[0]  = ' ';
+            castling_occured = true;
+            castling_side = false;
+          }
+        }else{ //If the player is playing as black
+          if (BitBoard[fromPos] == 'K' && toPos-fromPos ==  -2) { //kingside  castle black
+            BitBoard[58] = 'R';
+            BitBoard[56] = ' ';
+            castling_occured = true;
+            castling_side = true;
+          }
+          if (BitBoard[fromPos] == 'K' && toPos-fromPos == 2) { //queenside castle black
+            BitBoard[60] = 'R';
+            BitBoard[63] = ' ';
+            castling_occured = true;
+            castling_side = false;
+          }
+          if (BitBoard[fromPos] == 'k' && toPos-fromPos ==  2) { //kingside  castle white
+            BitBoard[5]  = 'r';
+            BitBoard[7]  = ' ';
+            castling_occured = true;
+            castling_side = true;
+          }
+          if (BitBoard[fromPos] == 'k' && toPos-fromPos == -2) { //queenside castle white
+            BitBoard[3]  = 'r';
+            BitBoard[0]  = ' ';
+            castling_occured = true;
+            castling_side = false;
+          }
         }
 
         //print("Emulated serial communication  --> ");
