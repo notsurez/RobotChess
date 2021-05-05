@@ -75,7 +75,6 @@ boolean castling_side = false;      //false = queenside, true = kingside
 char promoted_pawn = 'Q';     //what will the promoted pawn become
 char promoted_cpu_pawn = 'p'; //what the cpu promoted its pawn to
 boolean promoted_player_cherry = false;
-boolean promotionNotSelected = true;
 
 boolean queenside_cherry = true;
 boolean kingside_cherry  = true;
@@ -83,6 +82,8 @@ boolean queenside_cherry_b = true;
 boolean kingside_cherry_b  = true;
 
 boolean paused = false;
+
+boolean player_resigned = false;
 
 void setup() { 
   for(int i = 0; i < 64; i++) BitBoard[i] = ' ';
@@ -123,7 +124,7 @@ void setup() {
   //readFen(cur_fen);
   //drawPieces();
   
-  uCPUinit(4); //use the 2nd COM port
+  //uCPUinit(4); //use the 2nd COM port
 }
 
 void draw() {  
@@ -538,7 +539,6 @@ void mousePressed() {
   random.active = false;
   cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
   evalString = "e2e4";
-  if (board_connected == true) microPC.write("`@````````");
  }
  if(black.MouseIsOver()  && game_state == 1) {
   which_side = 'b';
@@ -547,7 +547,6 @@ void mousePressed() {
   random.active = false;
   cur_fen = blk_fen;
   evalString = "e7e5";
-  if (board_connected == true) microPC.write("`?````````");
  }
  if(random.MouseIsOver()  && game_state == 1) {
   white.active = false; 
@@ -558,12 +557,10 @@ void mousePressed() {
         which_side = 'b';
         cur_fen = blk_fen;
         evalString = "e7e5";
-        if (board_connected == true) microPC.write("`?````````");
       }else{
         which_side = 'w';
         cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         evalString = "e2e4";
-        if (board_connected == true) microPC.write("`@````````");
       }
     
  }
@@ -573,6 +570,7 @@ void mousePressed() {
  
  if(resign.MouseIsOver() && game_state == 2) {
    game_gg = true;
+   player_resigned = true;
  }
  
  if(Q.MouseIsOver() && game_state == 2) {
@@ -666,19 +664,15 @@ void exampleCPUAnal() {
      bar_pos =  20;
   }
 
-  if (which_side == 'w') fill(0);
-  if (which_side == 'b') fill(255);
+  fill(0);
   rect(boardSize, 0, 50, bar_pos, 10);
-  if (which_side == 'w') fill(255);
-  if (which_side == 'b') fill(0);
+  fill(255);
   rect(boardSize, bar_pos, 50, height, 10);
   textSize(13);
   if(bar_pos > height/2-5 ){
-    if (which_side == 'w') fill(255);
-    if (which_side == 'b') fill(0);
+    fill(255);
   }else{
-    if (which_side == 'w') fill(0);
-    if (which_side == 'b') fill(255);
+      fill(0);
   }
 
   if (game_gg == false) {
@@ -783,6 +777,7 @@ class Button {
 }
 
 void lossCard() {
+  String result = "You won by checkmate";
   rectMode(CENTER);
   fill(75, 50, 200);
   rect(width/2, height/2, width/2.5, height - 200, 20);
@@ -794,8 +789,16 @@ void lossCard() {
   start_button.display();
   returnToMenu.display();
   textAlign(CENTER);
+  if(player_time <= 0){
+    result = "You lost on time";
+  }else if(computer_time <= 0){
+    result = "You won on time";
+  }else if(player_resigned){
+    result = "You lost by resignition";
+  }
   text("Game Over", width/2, 200);
-  game_gg = true;
+  textSize(20);
+  text(result, width/2, 260);
 }
 
 void newGame() {
@@ -808,6 +811,7 @@ void newGame() {
      kingside_cherry = true;
     queenside_cherry_b = true;
      kingside_cherry_b = true;
+     player_resigned = false;
     for(int i = 0; i < 8; i++) {
      for(int j = 0; j < 8; j++) {
       board[i][j] = null; 

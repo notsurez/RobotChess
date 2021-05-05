@@ -65,8 +65,12 @@ void keepTime() {
   fill(255);
   textSize(40);
   String computer_displayTime = null;
+  if(computer_time > 0){
   if (computer_time%60 > 9)  computer_displayTime = str(computer_time/60) + str(':')  + str(computer_time%60);
   if (computer_time%60 < 10) computer_displayTime = str(computer_time/60) + ":0" + str(computer_time%60);
+  }else{
+    computer_displayTime = "0:00";
+  }
   text(computer_displayTime, cpuX+50, cpuY+40);
   
   //White Clock and Player
@@ -79,8 +83,12 @@ void keepTime() {
   fill(255);
   textSize(40);
   String player_displayTime = null;
+  if(player_time > 0) {
   if (player_time%60 > 9)  player_displayTime = str(player_time/60) + str(':')  + str(player_time%60);
   if (player_time%60 < 10) player_displayTime = str(player_time/60) + ":0" + str(player_time%60);
+  }else {
+    player_displayTime = "0:00";
+  }
   text(player_displayTime, playerX+50, playerY+40);
   
   if (paused == true) m = millis();
@@ -89,18 +97,17 @@ void keepTime() {
    //println(turnState);
    
    if(turnState == 'P') {
-     if (player_time == 0) game_gg = true;
+     if (player_time <= 0) game_gg = true;
      player_time--;
      
      //print("Emulated clock  communications --> ");
      //println(str(toBase64(BitBoard, false, false, ((player_time / 60)*100) + (player_time % 60) + 1000, turnState))); //the bitboard, is castling, castling queen(false) or king(true), time string, player turn ('P' or 'p')
-   if (board_connected == true) {  
-     microPC.write("xxxx");
-     microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
-     microPC.write("UU");
-   }
+     
+     //microPC.write("xxxx");
+     //microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
+     //microPC.write("UU");
    }else {
-    if (computer_time == 0) game_gg = true;
+    if (computer_time <= 0) game_gg = true;
     computer_time--; 
    }
   m = millis(); 

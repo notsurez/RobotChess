@@ -33,10 +33,7 @@ class ChessPiece {
   boolean whiteinchecksw = false, whiteincheckse = false, whiteinchecknw = false,whiteincheckne = false, whiteincheckup = false, whiteincheckrt = false,whiteincheckdn = false,whiteinchecklt = false, whiteincheckknight = false, whiteincheckpawn = false;
   boolean blackincheck = false;
   boolean whiteincheckking = false;
-  boolean incheck[] = new boolean[64];
   boolean kingcheck = false;
-  
-  //byte BitBoard[] = new byte[64];
   
   ChessPiece(char pt, float xpos, float ypos,float s, int bitBI){
     imageMode(CENTER);
@@ -644,7 +641,7 @@ boolean isLegal1(int From, int To){
          right = true;
        }
      }
-           if((d == sqrt(2)) && (y_2 < y_1)){ 
+           if((To-From == -7||To-From == -9)){ 
               if(BitBoard[To] == 'p'){ 
         whiteincheckpawn = true;
       }
@@ -1120,15 +1117,6 @@ boolean isLegal1(int From, int To){
    if(To < 0|| To > 63){ //returns false if move is off the board
         return false;
       }
-     }
-     
-     if (up == true){
-         if((To-From == -7||To-From == -9) && (BitBoard[To] == 'p'||BitBoard[To] =='q'||BitBoard[To] =='b'||BitBoard[To] == 'n'||BitBoard[To] == 'r')){ // Condition to test if the pawn is making a capture
-           IsitLegal = true;
-           if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
-        return false;
-      }
-      }  
      }
       break;
            

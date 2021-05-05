@@ -177,12 +177,15 @@ String listen() {
         
         //If the rook or the king moves, set castling rights to false
   if(which_side == 'w'){
-    if (fromPos == 0 || fromPos == 5) queenside_cherry_b = false;
-    if (fromPos == 7 || fromPos == 5) kingside_cherry_b  = false;
+    if (fromPos == 56 || fromPos == 60) queenside_cherry = false;
+    if (fromPos == 63 || fromPos == 60) kingside_cherry = false;
+    
   }else if(which_side == 'b'){
-    if (fromPos == 0 || fromPos == 5) queenside_cherry_b = false;
-    if (fromPos == 7 || fromPos == 5) kingside_cherry_b  = false;
+    if (fromPos == 63 || fromPos == 59) queenside_cherry = false;
+    if (fromPos == 56 || fromPos == 59) kingside_cherry = false;
+    
   }
+  
   
         if(which_side == 'w') {
           if (BitBoard[fromPos] == 'K' && toPos-fromPos ==  2) { //kingside  castle white
@@ -222,15 +225,15 @@ String listen() {
             castling_occured = true;
             castling_side = false;
           }
-          if (BitBoard[fromPos] == 'k' && toPos-fromPos ==  2) { //kingside  castle white
-            BitBoard[5]  = 'r';
-            BitBoard[7]  = ' ';
+          if (BitBoard[fromPos] == 'k' && toPos-fromPos ==  -2) { //kingside  castle white
+            BitBoard[2]  = 'r';
+            BitBoard[0]  = ' ';
             castling_occured = true;
             castling_side = true;
           }
-          if (BitBoard[fromPos] == 'k' && toPos-fromPos == -2) { //queenside castle white
-            BitBoard[3]  = 'r';
-            BitBoard[0]  = ' ';
+          if (BitBoard[fromPos] == 'k' && toPos-fromPos == 2) { //queenside castle white
+            BitBoard[4]  = 'r';
+            BitBoard[7]  = ' ';
             castling_occured = true;
             castling_side = false;
           }
