@@ -17,7 +17,7 @@ import java.util.BitSet;
   
   boolean heardBestmove = false;
   boolean legalMoves[] = new boolean[64];
-  
+    
 class ChessPiece {
   
   PImage wp, wr, wn, wb, wq, wk, bp, br, bn, bb, bq, bk; //Initialize individual PImages for each piece
@@ -26,14 +26,15 @@ class ChessPiece {
   char pieceType; 
   Boolean selected = false;
   boolean firstMove = false;
-  
   boolean first = true; 
   boolean isPinnedup = false;   boolean isPinnedright = false;   boolean isPinneddown = false;   boolean isPinnedleft = false;  boolean isPinnednorthwest = false;  boolean isPinnednortheast = false;   boolean isPinnedsouthwest = false;   boolean isPinnedsoutheast = false;
-  boolean southwest = false, southeast = false, northeast = false , northwest = false, up = false, right = false, down = false, left = false;
-  boolean whiteinchecksw = false, whiteincheckse = false, whiteinchecknw = false,whiteincheckne = false, whiteincheckup = false, whiteincheckrt = false,whiteincheckdn = false,whiteinchecklt = false, whiteincheckknight = false, whiteincheckpawn = false;
+  boolean southwest = false, southeast = false, northeast = false, northwest = false, up = false, right = false, down = false, left = false;
+  boolean whiteinchecksw = false, whiteincheckse = false, whiteinchecknw = false, whiteincheckne = false, whiteincheckup = false, whiteincheckrt = false, whiteincheckdn = false, whiteinchecklt = false, whiteincheckknight = false, whiteincheckpawn = false;
   boolean blackincheck = false;
   boolean whiteincheckking = false;
-  boolean kingcheck = false;
+  boolean incheck[] = new boolean[64];
+    
+  //byte BitBoard[] = new byte[64];
   
   ChessPiece(char pt, float xpos, float ypos,float s, int bitBI){
     imageMode(CENTER);
@@ -255,9 +256,42 @@ void fillArray() {
    }
 
 }
-
+if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteincheckup||whiteinchecklt||whiteincheckdn||whiteincheckrt||whiteincheckknight||whiteincheckpawn){
+  println("cherry popped");
+  println("nig");
+  check_cherry = true;
+   println();
+   println(whiteinchecknw);
+   println(whiteincheckne);
+   println(whiteinchecksw);
+   println(whiteincheckse);
+   println(whiteinchecklt);
+   println(whiteincheckup);
+   println(whiteincheckdn);
+   println(whiteincheckrt);
+   println(whiteincheckpawn);
+   println(whiteincheckknight);
+   println(whiteincheckking);
+  }
 }
   void testcheck(){
+    if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteincheckup||whiteinchecklt||whiteincheckdn||whiteincheckrt||whiteincheckknight||whiteincheckpawn){
+  println("cherry popped");
+  println("testcheck");
+  check_cherry = true;
+   println();
+   println(whiteinchecknw);
+   println(whiteincheckne);
+   println(whiteinchecksw);
+   println(whiteincheckse);
+   println(whiteinchecklt);
+   println(whiteincheckup);
+   println(whiteincheckdn);
+   println(whiteincheckrt);
+   println(whiteincheckpawn);
+   println(whiteincheckknight);
+   println(whiteincheckking);
+}
       for(int j = 0; j < 64; j++){
         TempBoard[j] = BitBoard[j];
       }
@@ -308,6 +342,7 @@ for(int k = 63; k > -1; k--){
 if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteincheckup||whiteinchecklt||whiteincheckdn||whiteincheckrt||whiteincheckknight||whiteincheckpawn||whiteincheckking){
   legalMoves[i] = false;
 }
+
           }
         }
           
@@ -316,16 +351,21 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       }
 
   }
+  
   void kingincheck(){
           for(int j = 0; j < 64; j++){
         TempBoard[j] = BitBoard[j];
+        //print("j: ");
+        //print(j);
+        //print(" ");
+        //println(legalMoves[j]);
+        check_cherry = true;
       }
   int kingpos = positionOfPlayerKing();
   for(int z = 0; z < 64; z++){
                   for(int j = 0; j < 64; j++){
         BitBoard[j] = TempBoard[j];
       }
-      kingcheck = false;
       up = false;
       right = false;
       down = false;
@@ -334,7 +374,7 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
       northeast = false;
       southeast = false;
       southwest = false;
-            blockedup = false;
+      blockedup = false;
       blockeddown = false;
       blockedleft = false;
       blockedright = false;
@@ -366,9 +406,11 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
 for(int k = 63; k > -1; k--){
   isLegal2(kingpos,k);
 }
+
 if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteincheckup||whiteinchecklt||whiteincheckdn||whiteincheckrt||whiteincheckknight||whiteincheckpawn||whiteincheckking){
   legalMoves[z] = false;
   }
+  
   }
   }
           for(int j = 0; j < 64; j++){
@@ -379,7 +421,7 @@ if(whiteinchecknw||whiteincheckne||whiteinchecksw||whiteincheckse||whiteinchecku
   float m = 0, x_1 = 0, x_2 = 0, y_1 = 0, y_2 = 0;
   float d = 0;
   boolean blockedup = false, blockeddown = false, blockedleft = false, blockedright = false, blockednorthwest = false, blockednortheast = false, blockedsoutheast = false, blockedsouthwest = false;
-  boolean blockeduppin = false, blockedrightpin = false, blockeddownpin = false, blockedleftpin = false, blockednorthwestpin = false, blockednortheastpin =false, blockedsoutheastpin = false, blockedsouthwestpin = false;
+  boolean blockeduppin = false, blockedrightpin = false, blockeddownpin = false, blockedleftpin = false, blockednorthwestpin = false, blockednortheastpin = false, blockedsoutheastpin = false, blockedsouthwestpin = false;
   //Tim, put your logic in here
 boolean isLegal1(int From, int To){
     boolean IsitLegal = false;
@@ -611,7 +653,7 @@ boolean isLegal1(int From, int To){
       }
         if((abs(m) == 0.5||abs(m) == 2)&&(d == sqrt(5))){
              if(BitBoard[To] == 'n'){ 
-        whiteincheckknight= true;
+        whiteincheckknight = true;
       }
      }      
       if((m == 1)&&(y_2 > y_1)&&(southeast == false)){
@@ -641,7 +683,7 @@ boolean isLegal1(int From, int To){
          right = true;
        }
      }
-           if((To-From == -7||To-From == -9)){ 
+           if((d == sqrt(2)) && (y_2 < y_1)){ 
               if(BitBoard[To] == 'p'){ 
         whiteincheckpawn = true;
       }
@@ -1118,6 +1160,15 @@ boolean isLegal1(int From, int To){
         return false;
       }
      }
+     
+     if (up == true){
+         if((To-From == -7||To-From == -9) && (BitBoard[To] == 'p'||BitBoard[To] =='q'||BitBoard[To] =='b'||BitBoard[To] == 'n'||BitBoard[To] == 'r')){ // Condition to test if the pawn is making a capture
+           IsitLegal = true;
+           if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
+        return false;
+      }
+      }  
+     }
       break;
            
       case 'R': //White Rook
@@ -1339,16 +1390,17 @@ boolean isLegal1(int From, int To){
        }
      }
         if(whiteincheckrt == false&&whiteincheckdn == false&&whiteinchecklt == false&&whiteincheckup == false && whiteinchecknw==false && whiteincheckne==false && whiteinchecksw == false && whiteincheckse == false){
-                
+            if(d == 1||d == sqrt(2)){    
+               IsitLegal = true;
         if((To-From == -7||To-From == -9) && (BitBoard[To] == 'p')){ // Condition to test if the pawn is making a capture
         IsitLegal = true;
       }
-            if(d == 1||d == sqrt(2)){
-        IsitLegal = true;
+            
+       
               if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'k'){ // Condition to test if the pawn is trying to move to a square occupied by a friendly piece
         return false;
       }
-      }
+      
               if((To-From == -7||To-From == -9)){ // Condition to test if the pawn is making a capture
        if(BitBoard[To] == 'R' ||BitBoard[To] =='N'||BitBoard[To] == 'B'||BitBoard[To] =='Q'||BitBoard[To] =='K'||BitBoard[To] == 'P'||BitBoard[To] == 'k'){
          return false;
@@ -1361,6 +1413,7 @@ boolean isLegal1(int From, int To){
       if(To > 63 ||To < 0){ //Returns false if the king is moved off the board
         return false;
       } 
+            }
       if(which_side == 'w') {
         if(To == 58 && queenside_cherry == true && BitBoard[57] == ' ' && BitBoard[58] == ' ' && BitBoard[59] == ' ') IsitLegal = true;
         if(To == 62 &&  kingside_cherry == true && BitBoard[61] == ' ' && BitBoard[62] == ' ') IsitLegal = true;

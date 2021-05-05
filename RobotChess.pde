@@ -75,6 +75,7 @@ boolean castling_side = false;      //false = queenside, true = kingside
 char promoted_pawn = 'Q';     //what will the promoted pawn become
 char promoted_cpu_pawn = 'p'; //what the cpu promoted its pawn to
 boolean promoted_player_cherry = false;
+boolean promotionNotSelected = true;
 
 boolean queenside_cherry = true;
 boolean kingside_cherry  = true;
@@ -82,8 +83,9 @@ boolean queenside_cherry_b = true;
 boolean kingside_cherry_b  = true;
 
 boolean paused = false;
-
 boolean player_resigned = false;
+boolean check_cherry = false;
+boolean test_cherry = false;
 
 void setup() { 
   for(int i = 0; i < 64; i++) BitBoard[i] = ' ';
@@ -124,7 +126,7 @@ void setup() {
   //readFen(cur_fen);
   //drawPieces();
   
-  //uCPUinit(4); //use the 2nd COM port
+  uCPUinit(4); //use the 2nd COM port
 }
 
 void draw() {  
@@ -539,6 +541,7 @@ void mousePressed() {
   random.active = false;
   cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
   evalString = "e2e4";
+  if (board_connected == true) microPC.write("`@````````");
  }
  if(black.MouseIsOver()  && game_state == 1) {
   which_side = 'b';
@@ -547,6 +550,7 @@ void mousePressed() {
   random.active = false;
   cur_fen = blk_fen;
   evalString = "e7e5";
+  if (board_connected == true) microPC.write("`?````````");
  }
  if(random.MouseIsOver()  && game_state == 1) {
   white.active = false; 
@@ -557,10 +561,12 @@ void mousePressed() {
         which_side = 'b';
         cur_fen = blk_fen;
         evalString = "e7e5";
+        if (board_connected == true) microPC.write("`?````````");
       }else{
         which_side = 'w';
         cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
         evalString = "e2e4";
+        if (board_connected == true) microPC.write("`@````````");
       }
     
  }
@@ -664,15 +670,19 @@ void exampleCPUAnal() {
      bar_pos =  20;
   }
 
-  fill(0);
+  if (which_side == 'w') fill(0);
+  if (which_side == 'b') fill(255);
   rect(boardSize, 0, 50, bar_pos, 10);
-  fill(255);
+  if (which_side == 'w') fill(255);
+  if (which_side == 'b') fill(0);
   rect(boardSize, bar_pos, 50, height, 10);
   textSize(13);
   if(bar_pos > height/2-5 ){
-    fill(255);
+    if (which_side == 'w') fill(255);
+    if (which_side == 'b') fill(0);
   }else{
-      fill(0);
+    if (which_side == 'w') fill(0);
+    if (which_side == 'b') fill(255);
   }
 
   if (game_gg == false) {
@@ -686,13 +696,17 @@ void exampleCPUAnal() {
     bar_pos = 800;
   }
   }
-  if (game_gg == true && turnState == 'P')  {
+  if (game_gg == true) {
+  check_cherry = false;
+  checkmate();
+  if (check_cherry == false)  {
     text("0-1", boardSize + 5, height/2);
     bar_pos = 800;  
   }
-  if (game_gg == true && turnState == 'C')  {
+  if (check_cherry == true)  {
     text("1-0", boardSize + 5, height/2);
     bar_pos = 0;
+  }
   }
   textSize(25);
   fill(0);
@@ -777,14 +791,14 @@ class Button {
 }
 
 void lossCard() {
-  String result = "You won by checkmate";
+  String result = "You lost by checkmate";
+  if (check_cherry == true) result = "You won by checkmate";
   rectMode(CENTER);
   fill(75, 50, 200);
   rect(width/2, height/2, width/2.5, height - 200, 20);
   fill(200);
   rect(width/2, height/2, width/2.6, height - 220, 20);
   rectMode(CORNER);
-  
   
   start_button.display();
   returnToMenu.display();
@@ -811,7 +825,9 @@ void newGame() {
      kingside_cherry = true;
     queenside_cherry_b = true;
      kingside_cherry_b = true;
-     player_resigned = false;
+    player_resigned = false;
+    check_cherry = false;
+    test_cherry = false;
     for(int i = 0; i < 8; i++) {
      for(int j = 0; j < 8; j++) {
       board[i][j] = null; 
@@ -827,4 +843,19 @@ void newGame() {
     if (which_side == 'w') evalString = "e2e4";
     if (board_connected == true) microPC.write("``````````");
     paused = true;
+}
+
+void checkmate() {
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) { 
+      //do not allow picking up enemy pieces
+      if (paused == false && board[i][j] != null && board[i][j].pieceType == 'K') {
+          board[i][j].selected = true;
+          board[i][j].fillArray();
+          board[i][j].fillArray();
+          board[i][j].kingincheck();
+          board[i][j].testcheck();  
+      }
+    }
+  }
 }
