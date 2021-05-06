@@ -127,7 +127,7 @@ void setup() {
   //readFen(cur_fen);
   //drawPieces();
 
-  //uCPUinit(4); //use the 2nd COM port
+  uCPUinit(4); //use the 2nd COM port
 }
 
 void draw() {  
@@ -550,6 +550,8 @@ void mousePressed() {
   }
   // If the start menu is pressed, advance the game menu.
   if (start_button.MouseIsOver() && game_state != 2) {
+    if (board_connected == true && which_side == 'w') microPC.write("`@````````");
+    if (board_connected == true && which_side == 'b') microPC.write("`?````````");
     newGame();
     game_state = 2;
   }
@@ -563,7 +565,7 @@ void mousePressed() {
     random.active = false;
     cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     evalString = "e2e4";
-    if (board_connected == true) microPC.write("`@````````");
+    
   }
   if (black.MouseIsOver()  && game_state == 1) {
     which_side = 'b';
@@ -572,7 +574,7 @@ void mousePressed() {
     random.active = false;
     cur_fen = blk_fen;
     evalString = "e7e5";
-    if (board_connected == true) microPC.write("`?````````");
+    
   }
   if (random.MouseIsOver()  && game_state == 1) {
     white.active = false; 
@@ -583,12 +585,10 @@ void mousePressed() {
       which_side = 'b';
       cur_fen = blk_fen;
       evalString = "e7e5";
-      if (board_connected == true) microPC.write("`?````````");
     } else {
       which_side = 'w';
       cur_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
       evalString = "e2e4";
-      if (board_connected == true) microPC.write("`@````````");
     }
   }
   if (diff_slider.MouseIsOver() && game_state == 1) {
@@ -596,6 +596,8 @@ void mousePressed() {
   }
 
   if (resign.MouseIsOver() && game_state == 2) {
+    if (board_connected == true && which_side == 'w') microPC.write("`@````````");
+    if (board_connected == true && which_side == 'b') microPC.write("`?````````");
     game_gg = true;
     player_resigned = true;
   }
@@ -720,11 +722,11 @@ void exampleCPUAnal() {
   if (game_gg == true) {
     check_cherry = false;
     checkmate();
-    if (check_cherry == false) {
+    if (((check_cherry == false || player_resigned == true) && which_side == 'w') || ((check_cherry == true && player_resigned == false) && which_side == 'b')) {
       text("0-1", boardSize + 5, height/2);
       bar_pos = 800;
     }
-    if (check_cherry == true) {
+    if (((check_cherry == true && player_resigned == false) && which_side == 'w') || ((check_cherry == false || player_resigned == true) && which_side == 'b')) {
       text("1-0", boardSize + 5, height/2);
       bar_pos = 0;
     }

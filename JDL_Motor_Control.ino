@@ -1,5 +1,17 @@
 #include <Servo.h>
+#include <avr/wdt.h>        //Include this to handle watchdog timer
 Servo Mag_Servo;
+
+const int buttonPin7 = 7;
+const int buttonPin8 = 8;
+int buttonState7;             // the current reading from the input pin
+int lastButtonState7 = HIGH;   // the previous reading from the input pin
+int buttonState8;             // the current reading from the input pin
+int lastButtonState8 = HIGH;   // the previous reading from the input pin
+unsigned long lastDebounceTime7 = 0;  // the last time the output pin was toggled
+unsigned long debounceDelay7 = 50;    // the debounce time; increase if the output flickers
+unsigned long lastDebounceTime8 = 0;  // the last time the output pin was toggled
+unsigned long debounceDelay8 = 50;    // the debounce time; increase if the output flickers
 
 int mag_x = 50;
 int mag_y = 50;
@@ -166,8 +178,8 @@ void setup() {
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
-  pinMode(7, INPUT_PULLUP);
-  pinMode(8, INPUT_PULLUP);
+  pinMode(buttonPin7, INPUT_PULLUP);
+  pinMode(buttonPin8, INPUT_PULLUP);
   pinMode(10, OUTPUT);
   pinMode(11, OUTPUT);
   
@@ -205,7 +217,10 @@ memcpy(discardPile, default_discardPile, 32);
 void loop() {
   // put your main code here, to run repeatedly:
   serialTimeout = 0;
-  while (Serial.available() < 9);
+  while (Serial.available() < 9) {
+    if (digitalRead(7) == LOW) Reset_stepper();
+    if (digitalRead(8) == LOW) Reset_stepper();
+  }
   if (Serial.available() > 8) {
     //process incoming data
  //4 bytes - led board state in base64
@@ -558,6 +573,7 @@ void motorMovement(byte tile_from, byte tile_to) {
 
 //David's code begins here
 void Reset_stepper(){
+  if (debug_print == true) Serial.println(F("Resetting steppers"));
   digitalWrite(10, LOW);
   delay(10);
   digitalWrite(10, HIGH);
@@ -1362,6 +1378,23 @@ void reset_board() {
   numPieces = 32;
   oldnumPieces = 32;
   opposite_discard = false;
+
+ Player_Discard = 0;
+ Computer_Discard = 0;
+ Player_Discard_X = 0;
+ Player_Discard_Y_1 = -50;
+ Player_Discard_Y_2 = 850;
+ Computer_Discard_X = 0;
+ Computer_Discard_Y_1 = -50;
+ Computer_Discard_Y_2 = 850;
+
+  move_mag_DE(50, 50);
+  Reset_stepper();
+  if (debug_print == true) Serial.println(F("Resetting board"));
+  delay(1000);
+cli();                      //Clear interrupts
+wdt_enable(WDTO_15MS);      //Set the Watchdog to 15ms
+while(1);                   //Enter an infinite loop
 }
 
 void restore_garbage(byte garbage_tile_r, byte destination_r) {
