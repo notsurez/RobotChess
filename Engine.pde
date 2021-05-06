@@ -118,7 +118,7 @@ String listen() {
     heardBestmove = inputStr.contains("bestmove");
     if (heardBestmove) {
       println(inputStr);
-      String moveString = "";
+      moveString = "";
       
       if (inputStr.contains("ponder")) {
         evalString = inputStr.substring(inputStr.indexOf("ponder") + 7);
@@ -253,6 +253,7 @@ String listen() {
 
     if (fromPos != toPos && promoted_cherry == false) movesHistory = movesHistory + bbCoordString(fromPos) + bbCoordString(toPos) + " ";
     if (fromPos != toPos && promoted_cherry == true)  movesHistory = movesHistory + bbCoordString(fromPos) + bbCoordString(toPos) + promoted_cpu_pawn + " ";
+    
     promoted_cherry = false;
     
     if (board_connected == true) {
@@ -262,9 +263,10 @@ String listen() {
       microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
       microPC.write(turnState);
       microPC.write(turnState);
-      paused = true;
+      //paused = true;
       //delay(15000); //wait for the move to complete
     }
+    paused = true;
     
   if (oldPiece == 'p' && toPos > 55) {
    println("promoting the pawn");

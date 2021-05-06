@@ -674,7 +674,7 @@ boolean isLegal1(int From, int To){
             return false;
           }
                       
-      if(whiteincheckrt == false&&whiteincheckdn == false&&whiteinchecklt == false&&whiteincheckup == false && whiteinchecknw==false && whiteincheckne==false && whiteinchecksw == false && whiteincheckse == false){
+      if(whiteincheckrt == false&&whiteincheckdn == false&&whiteinchecklt == false&&whiteincheckup == false && whiteinchecknw==false && whiteincheckne==false && whiteinchecksw == false && whiteincheckse == false && !whiteincheckpawn && !whiteincheckknight){
 
             
         if((To-From == -7||To-From == -9) && (BitBoard[To] == 'p')){ // Condition to test if the pawn is making a capture
@@ -1361,7 +1361,7 @@ boolean isLegal1(int From, int To){
          whiteincheckking = true;
        }
      }
-        if(whiteincheckrt == false&&whiteincheckdn == false&&whiteinchecklt == false&&whiteincheckup == false && whiteinchecknw==false && whiteincheckne==false && whiteinchecksw == false && whiteincheckse == false){
+        if(whiteincheckrt == false&&whiteincheckdn == false&&whiteinchecklt == false&&whiteincheckup == false && whiteinchecknw==false && whiteincheckne==false && whiteinchecksw == false && whiteincheckse == false && !whiteincheckpawn && !whiteincheckknight){
             if(d == 1||d == sqrt(2)){    
                IsitLegal = true;
         if((To-From == -7||To-From == -9) && (BitBoard[To] == 'p')){ // Condition to test if the pawn is making a capture
@@ -1749,6 +1749,7 @@ void addMove(int fromLocation, int toLocation, boolean tellStockfish) {
 
   if (promoted_player_cherry == false) movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + " ";
   if (promoted_player_cherry == true)  movesHistory = movesHistory + bbCoordString(fromLocation) + bbCoordString(toLocation) + (char)(promoted_pawn ^ 0x20) + " ";
+  log_move(movesHistory);
   promoted_player_cherry = false;
   println(castling_occured);
   if (board_connected == true) {
@@ -1758,6 +1759,8 @@ void addMove(int fromLocation, int toLocation, boolean tellStockfish) {
     microPC.write(str(((player_time / 60)*100) + (player_time % 60) + 1000));
     microPC.write(turnState);
     microPC.write(turnState);
+    delay(250);
+  }else {
     delay(250);
   }
   
